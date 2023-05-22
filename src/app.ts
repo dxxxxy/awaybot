@@ -1,61 +1,62 @@
+import { createBot } from "mineflayer"
+import { appendFileSync } from "fs"
+
+//setup
 require("dotenv").config()
-
 const stats = new(require("./stats.js"))()
-stats.allowance = 15
-stats.interest = 10
+const bot = createBot({
+    host: "mc.hypixel.net",
+    username: process.env.USERNAME,
+    auth: "microsoft",
+    version: "1.8.9"
+})
 
+//patterns
+const allowance = /ALLOWANCE! You earned (.*) coins!/g
+const interest = /You have just received (.*) coins as interest in your personal bank account!/g
 
-// const mineflayer = require("mineflayer")
-// const fs = require("fs")
-// const { exit } = require("process")
+//watch chat
+bot.addChatPattern("allowance", allowance)
+bot.addChatPattern("interest", interest)
 
-// const bot = mineflayer.createBot({
-//     host: "mc.hypixel.net",
-//     username: process.env.USERNAME,
-//     auth: "microsoft",
-//     version: "1.8.9"
-// })
+bot.on("login", () => {
+    console.log(`awaybot[${bot.username}] - Logged in.`)
+})
 
-// //add chat patterns
-// bot.addChatPattern("allowance", /ALLOWANCE! You earned (.*) coins!/g)
-// bot.addChatPattern("interest", /You have just received (.*) coins as interest in your personal bank account!/g)
+bot.on("spawn", () => {
+    if (!inSkyblock()) {
+        //the command is inconsistent, this ensures it works
+        const retryTimer = setInterval(() => {
+            if (inSkyblock()) clearInterval(retryTimer)
+            else bot.chat("/play sb")
+        }, 5000)
+    } else console.log("Already in Skyblock")
+})
 
-// bot.on("login", () => {
-//     console.log(`awaybot[${bot.username}] - Logged in.`)
-// })
+bot.on("scoreboardTitleChanged", (title) => {
+    console.log(bot.scoreboard.list.items)
+})
 
-// bot.on("spawn", () => {
-//     if (!inSkyblock()) {
-//         //the command is inconsistent, this ensures it works
-//         const retryTimer = setInterval(() => {
-//             if (inSkyblock()) clearInterval(retryTimer)
-//             else bot.chat("/play sb")
-//         }, 5000)
-//     } else console.log("Already in Skyblock")
-// })
+//logging
+bot.on("error", err => {
+    appendFileSync("error.log", `${new Date(Date.now()).toLocaleTimeString()} - ${err}`)
+})
 
-// bot.on("scoreboardTitleChanged", (title) => {
-//     // console.log(title)
-//     console.log(bot.scoreboard.sidebar.name)
-//     console.log(inSkyblock())
-// })
+const inSkyblock = () => {
+    return bot.scoreboard.sidebar.name.includes("SBScoreboard")
+}
 
-// //logging
-// bot.on("error", err => {
-//     fs.appendFile("error.log", `${new Date(Date.now()).toLocaleTimeString()} - ${err}`, (err) => {
-//         if (err) console.log(err)
-//     })
-// })
+//chat patterns
+// @ts-ignore
+bot.on("chat:allowance", (_, message: String) => {
+    const coins = message.match(allowance)[1]
+    stats.allowance += coins
+    console.log(`Got ${coins} coins from allowance.`)
+})
 
-// const inSkyblock = () => {
-//     return bot.scoreboard.sidebar.name.includes("SBScoreboard")
-// }
-
-// //chat patterns
-// bot.on("chat:allowance", (username, message) => {
-//     console.log(message)
-// })
-
-// bot.on("chat:interest", (username, message) => {
-//     console.log(message)
-// })
+// @ts-ignore
+bot.on("chat:interest", (_, message: String) => {
+    const coins = message.match(interest)[1]
+    stats.interest += coins
+    console.log(`Got ${coins} coins from interest.`)
+})

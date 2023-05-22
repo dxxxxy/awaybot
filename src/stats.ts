@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from "fs"
 
-module.exports = class Stats {
+export default class Stats {
     static default = {
         "allowance": 0,
         "interest": 0
