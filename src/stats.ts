@@ -1,4 +1,4 @@
-const fs = require("fs")
+import { existsSync, readFileSync, writeFileSync } from "fs"
 
 module.exports = class Stats {
     static default = {
@@ -7,11 +7,11 @@ module.exports = class Stats {
     }
 
     constructor() {
-        //create file if it doesnt exist
-        if (!fs.existsSync("stats.json")) fs.writeFileSync("stats.json", JSON.stringify(Stats.default))
+        //create file if it doesn't exist
+        if (!existsSync("stats.json")) writeFileSync("stats.json", JSON.stringify(Stats.default))
 
         //fill this object
-        Object.entries(JSON.parse(fs.readFileSync("stats.json"))).forEach(([key, value]) => this[key] = value)
+        Object.entries(JSON.parse(readFileSync("stats.json", "utf8"))).forEach(([key, value]) => this[key] = value)
 
         //add what is missing in default
         Object.entries(Stats.default).forEach(([key, value]) => { if (!this[key]) this[key] = value })
@@ -27,7 +27,7 @@ module.exports = class Stats {
                     Object.keys(toSave).forEach(key => { if (key.startsWith("_")) delete toSave[key] })
 
                     //save
-                    fs.writeFileSync("stats.json", JSON.stringify(toSave))
+                    writeFileSync("stats.json", JSON.stringify(toSave))
                 },
                 get: () => this["_" + key]
             })
