@@ -5,6 +5,7 @@
     "author": "dxxxxy",
     "license": "GPL-3.0",
     "dependencies": {
+        "dotenv": "^16.0.3",
         "mineflayer": "^4.8.1"
     }
 }
