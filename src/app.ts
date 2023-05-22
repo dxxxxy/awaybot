@@ -1,9 +1,10 @@
-import { createBot } from "mineflayer"
+import { createBot } from "@dxxxxy/mineflayer"
 import { appendFileSync } from "fs"
+import Stats, { IStats } from "./stats"
 
 //setup
 require("dotenv").config()
-const stats = new(require("./stats.js"))()
+const stats: IStats = new Stats()
 const bot = createBot({
     host: "mc.hypixel.net",
     username: process.env.USERNAME,
@@ -34,7 +35,9 @@ bot.on("spawn", () => {
 })
 
 bot.on("scoreboardTitleChanged", (title) => {
-    console.log(bot.scoreboard.list.items)
+    if (bot.scoreboard.list != null) {
+        console.log(bot.scoreboard.list.items)
+    }
 })
 
 //logging
@@ -50,13 +53,13 @@ const inSkyblock = () => {
 // @ts-ignore
 bot.on("chat:allowance", (_, message: String) => {
     const coins = message.match(allowance)[1]
-    stats.allowance += coins
+    stats.allowance += Number.parseInt(coins)
     console.log(`Got ${coins} coins from allowance.`)
 })
 
 // @ts-ignore
 bot.on("chat:interest", (_, message: String) => {
     const coins = message.match(interest)[1]
-    stats.interest += coins
+    stats.interest += Number.parseInt(coins)
     console.log(`Got ${coins} coins from interest.`)
 })

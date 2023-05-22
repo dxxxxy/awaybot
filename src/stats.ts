@@ -34,3 +34,8 @@ export default class Stats {
         })
     }
 }
+
+export interface IStats {
+    allowance?: number
+    interest?: number
+}
