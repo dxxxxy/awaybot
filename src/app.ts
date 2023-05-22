@@ -34,12 +34,6 @@ bot.on("spawn", () => {
     } else console.log("Already in Skyblock")
 })
 
-bot.on("scoreboardTitleChanged", (title) => {
-    if (bot.scoreboard.list != null) {
-        console.log(bot.scoreboard.list.items)
-    }
-})
-
 //logging
 bot.on("error", err => {
     appendFileSync("error.log", `${new Date(Date.now()).toLocaleTimeString()} - ${err}`)
@@ -47,6 +41,10 @@ bot.on("error", err => {
 
 const inSkyblock = () => {
     return bot.scoreboard.sidebar.name.includes("SBScoreboard")
+}
+
+const inPrivateIsland = () => {
+    return bot.scoreboard.sidebar.items.map(item => item.displayName).join("\n").replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, "").includes("Your Island")
 }
 
 //chat patterns
