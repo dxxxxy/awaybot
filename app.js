@@ -1,6 +1,7 @@
 require("dotenv").config()
 
 const mineflayer = require("mineflayer")
+const fs = require("fs")
 
 const bot = mineflayer.createBot({
     host: "mc.hypixel.net",
@@ -32,8 +33,11 @@ bot.on("scoreboardTitleChanged", (title) => {
     console.log(inSkyblock())
 })
 
+//logging
 bot.on("error", err => {
-    console.log(err)
+    fs.appendFile("error.log", `${new Date(Date.now()).toLocaleTimeString()} - ${err}`, (err) => {
+        if (err) console.log(err)
+    })
 })
 
 const inSkyblock = () => {
