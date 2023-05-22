@@ -9,14 +9,38 @@ const bot = mineflayer.createBot({
     version: "1.8.9"
 })
 
-bot.on("spawn", () => {
-    console.log(bot.scoreboard.sidebar.title)
+bot.once("login", () => {
+    console.log(`awaybot[${bot.username}] - Logged in.`)
+
+    //add chat patterns
+    bot.addChatPattern("allowance", /ALLOWANCE! You earned (.*) coins!/g)
 })
 
-bot.on("chat", (message) => {
-    console.log(message)
+bot.on("spawn", () => {
+    if (!inSkyblock()) {
+        //the command is inconsistent, this ensures it works
+        const retryTimer = setInterval(() => {
+            if (inSkyblock()) clearInterval(retryTimer)
+            else bot.chat("/play sb")
+        }, 5000)
+    } else console.log("Already in Skyblock")
+})
+
+bot.on("scoreboardTitleChanged", (title) => {
+    // console.log(title)
+    console.log(bot.scoreboard.sidebar.name)
+    console.log(inSkyblock())
 })
 
 bot.on("error", err => {
     console.log(err)
+})
+
+const inSkyblock = () => {
+    return bot.scoreboard.sidebar.name.includes("SBScoreboard")
+}
+
+//chat patterns
+bot.on("chat:allowance", (username, message) => {
+    console.log(message)
 })
