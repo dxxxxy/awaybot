@@ -15,6 +15,7 @@ const bot = createBot({
 //patterns
 const allowance = /ALLOWANCE! You earned (.*) coins!/g
 const interest = /You have just received (.*) coins as interest in your personal bank account!/g
+const bits = /\+(.*) Bits from Cookie Buff!/g
 
 //watch chat
 bot.addChatPattern("allowance", allowance)
@@ -60,7 +61,11 @@ bot.on("error", err => {
 })
 
 bot.on("actionBar", message => {
-    console.log(message)
+    if (message.toString().match(bits)) {
+        const amount = message.toString().match(bits)[1]
+        stats.bits += Number.parseInt(amount)
+        console.log(`Got ${amount} bits.`)
+    }
 })
 
 const inSkyblock = () => {
@@ -85,4 +90,11 @@ bot.on("chat:interest", (_, message: String) => {
     const coins = message.match(interest)[1]
     stats.interest += Number.parseInt(coins)
     console.log(`Got ${coins} coins from interest.`)
+})
+
+//@ts-ignore
+bot.on("chat:bits", (_, message: String) => {
+    const amount = message.match(bits)[1]
+    stats.bits += Number.parseInt(amount)
+    console.log(`Got ${amount} bits.`)
 })

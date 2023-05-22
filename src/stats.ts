@@ -3,7 +3,8 @@ import { existsSync, readFileSync, writeFileSync } from "fs"
 export default class Stats {
     static default = {
         "allowance": 0,
-        "interest": 0
+        "interest": 0,
+        "bits": 0,
     }
 
     constructor() {
@@ -37,5 +38,6 @@ export default class Stats {
 
 export interface IStats {
     allowance?: number
-    interest?: number
+    interest?: number,
+    bits?: number
 }
