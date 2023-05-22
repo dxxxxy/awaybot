@@ -10,11 +10,12 @@ const bot = mineflayer.createBot({
     version: "1.8.9"
 })
 
-bot.once("login", () => {
-    console.log(`awaybot[${bot.username}] - Logged in.`)
+//add chat patterns
+bot.addChatPattern("allowance", /ALLOWANCE! You earned (.*) coins!/g)
+bot.addChatPattern("interest", /You have just received (.*) coins as interest in your personal bank account!/g)
 
-    //add chat patterns
-    bot.addChatPattern("allowance", /ALLOWANCE! You earned (.*) coins!/g)
+bot.on("login", () => {
+    console.log(`awaybot[${bot.username}] - Logged in.`)
 })
 
 bot.on("spawn", () => {
@@ -46,5 +47,9 @@ const inSkyblock = () => {
 
 //chat patterns
 bot.on("chat:allowance", (username, message) => {
+    console.log(message)
+})
+
+bot.on("chat:interest", (username, message) => {
     console.log(message)
 })
