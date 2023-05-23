@@ -13,9 +13,9 @@ const bot = createBot({
 })
 
 //patterns
-const allowance = /ALLOWANCE! You earned (.*) coins!/g
-const interest = /You have just received (.*) coins as interest in your personal bank account!/g
-const bits = /\+(.*) Bits from Cookie Buff!/g
+const allowance = /ALLOWANCE! You earned (.*) coins!/
+const interest = /You have just received (.*) coins as interest in your personal bank account!/
+const bits = /\+(.*) Bits from Cookie Buff!/
 
 //watch chat
 bot.addChatPattern("allowance", allowance)
@@ -60,11 +60,21 @@ bot.on("error", err => {
     appendFileSync("error.log", `${new Date(Date.now()).toLocaleTimeString()} - ${err}`)
 })
 
+//bits get sent 4 times to remain longer in action bar
+let bitsSent = 0
+
 bot.on("actionBar", message => {
-    if (message.toString().match(bits)) {
-        const amount = message.toString().match(bits)[1]
-        stats.bits += Number.parseInt(amount)
-        console.log(`Got ${amount} bits.`)
+    let m;
+
+    if ((m = bits.exec(message.toString())) !== null) {
+        bitsSent++
+        if (bitsSent == 4) {
+            bitsSent = 0
+
+            const amount = m[1]
+            stats.bits += Number.parseInt(amount)
+            console.log(`Got ${amount} bits.`)
+        }
     }
 })
 
@@ -90,11 +100,4 @@ bot.on("chat:interest", (_, message: String) => {
     const coins = message.match(interest)[1]
     stats.interest += Number.parseInt(coins)
     console.log(`Got ${coins} coins from interest.`)
-})
-
-//@ts-ignore
-bot.on("chat:bits", (_, message: String) => {
-    const amount = message.match(bits)[1]
-    stats.bits += Number.parseInt(amount)
-    console.log(`Got ${amount} bits.`)
 })

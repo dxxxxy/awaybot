@@ -17,6 +17,9 @@ export default class Stats {
         //add what is missing in default
         Object.entries(Stats.default).forEach(([key, value]) => { if (!this[key]) this[key] = value })
 
+        //save
+        writeFileSync("stats.json", JSON.stringify(this))
+
         //setup save hooks
         Object.keys(this).forEach(key => {
             Object.defineProperty(this, key, {
