@@ -1,10 +1,16 @@
 import { existsSync, readFileSync, writeFileSync } from "fs"
 
+export interface IStats {
+    allowance?: number
+    interest?: number,
+    bits?: number
+}
+
 export default class Stats {
-    static default = {
+    static default: IStats = {
         "allowance": 0,
         "interest": 0,
-        "bits": 0,
+        "bits": 0
     }
 
     constructor() {
@@ -12,7 +18,7 @@ export default class Stats {
         if (!existsSync("stats.json")) writeFileSync("stats.json", JSON.stringify(Stats.default))
 
         //load defaults
-        Object.entries(Stats.default).forEach(([key, value]) => { this[key] = value })
+        Object.entries(Stats.default).forEach(([key, value]) => this[key] = value)
 
         //setup getters & setters for auto save
         Object.keys(this).forEach(key => {
@@ -43,10 +49,4 @@ export default class Stats {
         //save
         writeFileSync("stats.json", JSON.stringify(this))
     }
-}
-
-export interface IStats {
-    allowance?: number
-    interest?: number,
-    bits?: number
 }
