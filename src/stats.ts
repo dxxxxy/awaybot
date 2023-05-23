@@ -11,24 +11,24 @@ export default class Stats {
         //create file if it doesn't exist
         if (!existsSync("stats.json")) writeFileSync("stats.json", JSON.stringify(Stats.default))
 
-        //fill this object
-        Object.entries(JSON.parse(readFileSync("stats.json", "utf8"))).forEach(([key, value]) => this[key] = value)
+        //load defaults
+        Object.entries(Stats.default).forEach(([key, value]) => { this[key] = value })
 
-        //add what is missing in default
-        Object.entries(Stats.default).forEach(([key, value]) => { if (!this[key]) this[key] = value })
-
-        //save
-        writeFileSync("stats.json", JSON.stringify(this))
-
-        //setup save hooks
+        //setup getters & setters for auto save
         Object.keys(this).forEach(key => {
             Object.defineProperty(this, key, {
                 set: (val) => {
                     this["_" + key] = val
 
-                    //remove hook values
+                    //quick switch
                     const toSave = structuredClone(this)
-                    Object.keys(toSave).forEach(key => { if (key.startsWith("_")) delete toSave[key] })
+                    Object.keys(toSave).forEach(key => {
+                        if (key.startsWith("_")) {
+                            const newKey = key.replace("_", "")
+                            toSave[newKey] = toSave[key]
+                            delete toSave[key]
+                        } else delete toSave[key]
+                    })
 
                     //save
                     writeFileSync("stats.json", JSON.stringify(toSave))
@@ -36,6 +36,12 @@ export default class Stats {
                 get: () => this["_" + key]
             })
         })
+
+        //load actual values
+        Object.entries(JSON.parse(readFileSync("stats.json", "utf8"))).forEach(([key, value]) => this[key] = value)
+
+        //save
+        writeFileSync("stats.json", JSON.stringify(this))
     }
 }
 
