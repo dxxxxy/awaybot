@@ -21,39 +21,18 @@ const bits = /\+(.*) Bits from Cookie Buff!/
 bot.addChatPattern("allowance", allowance)
 bot.addChatPattern("interest", interest)
 
-bot.once("spawn", () => {
-    console.log(`awaybot[${bot.username}] - Spawned.`)
-    warpToSkyblock()
-    warpToIsland()
+bot.once("login", () => {
+    console.log(`awaybot[${bot.username}] - Logged in.`)
+
+    //state polling
+    setInterval(() => { if (!inSkyblock()) bot.chat("/play sb") }, 5000)
+    setInterval(() => { if (inSkyblock() && !inPrivateIsland()) bot.chat("/warp home") }, 5000)
 })
 
-const warpToSkyblock = () => {
-    if (!inSkyblock()) {
-        //the command is inconsistent, this ensures it works
-        const retryTimer = setInterval(() => {
-            if (inSkyblock()) {
-                console.log("Joined skyblock.")
-                clearInterval(retryTimer)
-            }
-            else bot.chat("/play sb")
-        }, 5000)
-    }
-}
-
-const warpToIsland = () => {
-    if (!inPrivateIsland()) {
-        //the command is inconsistent, this ensures it works
-        const retryTimer = setInterval(() => {
-            if (!inSkyblock()) return
-
-            if (inPrivateIsland()) {
-                console.log("Teleported to private island.")
-                clearInterval(retryTimer)
-            }
-            else bot.chat("/warp home")
-        }, 5000)
-    }
-}
+bot.on("spawn", () => {
+    if (inSkyblock()) console.log(`awaybot[${bot.username}] - In Skyblock.`)
+    if (inPrivateIsland()) console.log(`awaybot[${bot.username}] - In Private Island.`)
+})
 
 //logging
 bot.on("error", err => {
@@ -72,7 +51,7 @@ bot.on("actionBar", message => {
             bitsSent = 0
 
             const amount = m[1]
-            stats.bits += Number.parseInt(amount)
+            stats.bits += parseInt(amount)
             console.log(`Got ${amount} bits.`)
         }
     }
@@ -89,14 +68,14 @@ const inPrivateIsland = () => {
 
 //chat patterns
 //@ts-ignore
-bot.on("chat:allowance", (_, message: String) => {
-    const coins = message.match(allowance)[1]
+bot.on("chat:allowance", (_, message: string) => {
+    const coins = bits.exec(message)[1]
     stats.allowance += Number.parseInt(coins)
     console.log(`Got ${coins} coins from allowance.`)
 })
 
 //@ts-ignore
-bot.on("chat:interest", (_, message: String) => {
+bot.on("chat:interest", (_, message: string) => {
     const coins = message.match(interest)[1]
     stats.interest += Number.parseInt(coins)
     console.log(`Got ${coins} coins from interest.`)
