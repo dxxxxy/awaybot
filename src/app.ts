@@ -1,22 +1,17 @@
-import { createBot } from "@dxxxxy/mineflayer"
-import Stats, { IStats } from "./util/stats"
-import { allowance, interest } from "./util/patterns"
+import Stats, { IStats } from "./util/stats.js"
+import { allowance, interest } from "./util/patterns.js"
+import { start } from "./util/bot.js"
 
 //setup
-require("dotenv").config()
+(await import("dotenv")).config()
 
 //instances
 export const stats: IStats = new Stats()
-export const bot = createBot({
-    host: "mc.hypixel.net",
-    username: process.env.USERNAME,
-    auth: "microsoft",
-    version: "1.8.9"
-})
+export const bot = start()
 
 //patterns
 bot.addChatPattern("allowance", allowance)
 bot.addChatPattern("interest", interest)
 
 //events
-require("./event/index")
+import("./event/index.js")

@@ -1,5 +1,5 @@
-import { bot, stats } from "../../app"
-import { bits } from "../../util/patterns"
+import { bot, stats } from "../../app.js"
+import { bits } from "../../util/patterns.js"
 
 //bits get sent 4 times to remain longer in action bar
 let bitsSent = 0

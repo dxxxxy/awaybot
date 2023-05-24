@@ -1,6 +1,6 @@
 //@ts-ignore
-import { bot, stats } from "../../app"
-import { interest } from "../../util/patterns"
+import { bot, stats } from "../../app.js"
+import { interest } from "../../util/patterns.js"
 
 //@ts-ignore
 bot.on("chat:interest", (_, message: string) => {

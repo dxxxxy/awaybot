@@ -1,6 +1,7 @@
-import { inPrivateIsland, inSkyblock } from "../../util/utils"
+import { inPrivateIsland, inSkyblock, log } from "../../util/utils.js"
 import { appendFileSync } from "fs"
-import { bot } from "../../app"
+import { bot } from "../../app.js"
+import { background } from "../../util/bot.js"
 
 const lastState = {
     inSkyblock: false,
@@ -42,9 +43,13 @@ bot.once("login", () => {
     }, 5000)
 })
 
-bot.on("spawn", () => {
-    if (inSkyblock()) console.log(`awaybot[${bot.username}] - In Skyblock.`)
-    if (inPrivateIsland()) console.log(`awaybot[${bot.username}] - In Private Island.`)
+bot.on("kicked", (reason, _) => {
+    if (reason == "{\"extra\":[{\"color\":\"red\",\"text\":\"You logged in from another location!\"}],\"text\":\"\"}") {
+        log(`awaybot[${bot.username}] - Someone logged in.`, "red")
+        log(`awaybot[${bot.username}] - Switching to copilot mode.`, "yellow")
+
+        background()
+    }
 })
 
 //logging

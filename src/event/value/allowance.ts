@@ -1,6 +1,6 @@
 //@ts-ignore
-import { bot, stats } from "../../app"
-import { allowance } from "../../util/patterns"
+import { bot, stats } from "../../app.js"
+import { allowance } from "../../util/patterns.js"
 
 //@ts-ignore
 bot.on("chat:allowance", (_, message: string) => {
