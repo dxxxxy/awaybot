@@ -1,9 +1,9 @@
-import { Bot, createBot } from "@dxxxxy/mineflayer"
+import { createBot } from "@dxxxxy/mineflayer"
 import { bot } from "../app.js"
 import axios from "axios"
 import { log } from "./utils.js"
 
-export const start = (): Bot => {
+export const start = () => {
     return createBot({
         host: "mc.hypixel.net",
         username: process.env.EMAIL,
@@ -25,13 +25,12 @@ export const background = () => {
 
             if (!res.data.session.online) {
                 clearInterval(retry)
-                log(`awaybot[${bot.username}] - Switching to main mode.`, "yellow")
-                // await import("../app.js")
-                start()
+                log(`awaybot[${bot.username}] - Restarting.`, "yellow")
+                process.exit(0) //force process to exit, pm2 will restart it
             }
         } catch (err) {
             //somethings wrong... cant check
-            clearInterval(retry) //program exits here
+            log(`awaybot[${bot.username}] - Can't check session, cannot restart.`, "red")
         }
     }, 20000)
 }
