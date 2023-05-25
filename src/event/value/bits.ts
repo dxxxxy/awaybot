@@ -1,5 +1,6 @@
 import { bot, stats } from "../../app.js"
 import { bits } from "../../util/patterns.js"
+import { log } from "../../util/utils.js"
 
 //bits get sent 4 times to remain longer in action bar
 let bitsSent = 0
@@ -14,7 +15,7 @@ bot.on("actionBar", message => {
             //add bits
             const amount = m[1]
             stats.bits += parseInt(amount)
-            console.log(`Got ${amount} bits.`)
+            log(`+${amount} bits`, "cyan")
         }
     }
 })
