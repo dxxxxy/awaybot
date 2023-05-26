@@ -1,6 +1,10 @@
 # awaybot
 A mineflayer bot for staying afk in a smart manner on Hypixel Skyblock.
 
+![](https://img.shields.io/docker/image-size/dxxxxy/awaybot/latest?style=for-the-badge&color=9cf&logo=docker)
+![](https://img.shields.io/docker/pulls/dxxxxy/awaybot?style=for-the-badge&color=9cf&logo=docker)
+![](https://img.shields.io/docker/stars/dxxxxy/awaybot?style=for-the-badge&color=9cf&logo=docker)
+
 ## Installing
 
 ### Git
