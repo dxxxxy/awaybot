@@ -1,6 +1,6 @@
 {
     "name": "awaybot",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "main": "app.js",
     "author": "dxxxxy",
     "type": "module",
