@@ -1,17 +1,13 @@
-import Stats, { IStats } from "./util/stats.js"
-import { allowance, interest } from "./util/patterns.js"
-import { start } from "./util/bot.js"
+import "dotenv/config"
 
-//setup
-(await import("dotenv")).config()
+import BotHandler from "./util/botHandler.js"
+import ModuleLoader from "./util/moduleLoader.js"
+import StatManager from "./util/statManager.js"
 
-//instances
-export const stats: IStats = new Stats()
-export const bot = start()
+export const importModule = async (path: string) => {
+    await import(`./${path.replace(/\\/g, "/")}`)
+}
 
-//patterns
-bot.addChatPattern("allowance", allowance)
-bot.addChatPattern("interest", interest)
-
-//events
-import("./event/index.js")
+StatManager.init()
+BotHandler.start()
+ModuleLoader.loadModules()
