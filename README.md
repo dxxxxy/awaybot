@@ -14,7 +14,9 @@ A fully-modular mineflayer bot for staying afk in a smart manner on Hypixel Skyb
 - Colorful and detailed console output *(set FORCE_COLOR=1 if color doesn't show)*.
 
 ## Installing
-### Git
+You have two choices.
+
+### 1. Git (clone)
 > You are expected to have Node.js installed. If faced with any issues, try using `v18.16.0`.
 1. Clone this repo.
 2. Install dependencies with `npm install`.
@@ -28,7 +30,7 @@ It will continuously poll the hypixel api using the api key to check if the play
 
 Start the bot with `npm run pm2-start` and stop it with `pm2 delete awaybot`.
 
-### Docker 
+### 2. Docker 
 > You are expected to have Docker installed.
 
 Run the following command, replacing the environment variables from `.example.env` with your own values:
