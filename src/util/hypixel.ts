@@ -1,6 +1,8 @@
 import { bot } from "./botHandler.js"
 
 export const visitIsland = () => {
+    if (!process.env.VISIT_NAME) return bot.chat("/is")
+
     bot.chat("/visit " + process.env.VISIT_NAME)
 
     bot.once("windowOpen", window => {
