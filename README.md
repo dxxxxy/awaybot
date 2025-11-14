@@ -1,44 +1,65 @@
 # awaybot
 A fully-modular mineflayer bot for staying afk in a smart manner on Hypixel Skyblock.
 
+WARNING: Docker remote image is severely out of date.
+
 ![](https://img.shields.io/docker/image-size/dxxxxy/awaybot/latest?style=for-the-badge&color=9cf&logo=docker)
 ![](https://img.shields.io/docker/pulls/dxxxxy/awaybot?style=for-the-badge&color=9cf&logo=docker)
 ![](https://img.shields.io/docker/stars/dxxxxy/awaybot?style=for-the-badge&color=9cf&logo=docker)
 
 ## Features
-- Always ensures it is on skyblock and a private/visit island.
+- Always ensures it is on private island.
 - Lightweight in terms of CPU and RAM usage.
 - Fully modular and easy to control *(set DISABLED_MODULES in .env)*.
-- Logs gains such as coins (allowance, interest) and bits in a JSON file.
-- Hibernates/takes-over your place when you leave and gives you control back when you join.
-- Colorful and detailed console output *(set FORCE_COLOR=1 if color doesn't show)*.
+- Automatically logs any changes to stat variables in a JSON file.
 
-## Installing
-You have two choices.
+## Modules
+<table>
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=1>Presence</td>
+            <td>Hibernate</td>
+            <td>Joins the server when the user leaves and leaves the server when the user joins.</td>
+        </tr>
+        <tr>
+            <td rowspan=3>Tracking</td>
+            <td>Allowance</td>
+            <td>Tracks daily coin allowance gains.</td>
+        </tr>
+        <tr>
+            <td>Bits</td>
+            <td>Tracks bit gains.</td>
+        </tr>
+        <tr>
+            <td>Interest</td>
+            <td>Tracks bank interest gains.</td>
+        </tr>
+    </tbody>
+</table>
 
-### 1. Git (clone)
-> You are expected to have Node.js installed. If faced with any issues, try using `v18.16.0`.
-1. Clone this repo.
-2. Install dependencies with `npm install`.
-3. Copy `.env.example` to `.env` and fill in the required values.
-4. Run the bot with `npm start` or `npm run pm2-start` (see [pm2](#pm2)).
+### More Modules
+You can create your own modules by creating a new TypeScript file in the `module/` directory. The module loader will run the following function with the bot instance as a parameter:
+```
+export default (bot: Bot) => {
+    // Your code here
+}
+```
 
-#### PM2
-pm2 is a process manager for Node.js applications and here it is used for the hibernate/take-over feature.
-The bot will enter this phase when it gets kicked from the server due to someone else logging in.
-It will continuously poll the hypixel api using the api key to check if the player is offline and if so, pm2 will restart the bot, and it will take over the player's place.
-
-Start the bot with `npm run pm2-start` and stop it with `pm2 delete awaybot`.
-
-### 2. Docker 
-> You are expected to have Docker installed.
-
+## Docker
 Run the following command, replacing the environment variables from `.example.env` with your own values:
+
 ```bash
 docker run --name awaybot --pull=always --detach -e EMAIL=x@x.x -e UUID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -e API_KEY=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx dxxxxy/awaybot
 ```
 
-Afterward, you can view and follow (`-f`) the logs with `docker logs awaybot -f` to view instructions on how to log into your Minecraft Microsoft Account.
+Afterward, you can view and follow (`-f`) the logs with `docker logs awaybot -f` to view instructions on how to log into your Minecraft Account.
 
 ## Disclaimer
 This is for educational purposes only. I am not responsible for any damage caused by this tool.

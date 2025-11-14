@@ -22,16 +22,16 @@ export default class BotHandler {
         }
 
         bot.on("scoreboardTitleChanged", (scoreboard: ScoreBoard) => {
+            const inSkyblock = scoreboard.name == "SBScoreboard"
+            if (!bot.inSkyblock && inSkyblock) bot.log("Entered Skyblock")
+            if (bot.inSkyblock && !inSkyblock) bot.log("Left Skyblock")
+            bot.inSkyblock = inSkyblock
+
             //checks for a part of the string as emojis mess with the displayName (mineflayer or hypixel bug)
             const inIsland = scoreboard.items.some(item => item.displayName.toString().includes("Your Isla"))
             if (!bot.inIsland && inIsland) bot.log("Entered Island")
             if (bot.inIsland && !inIsland) bot.log("Left Island")
             bot.inIsland = inIsland
-
-            const inSkyblock = scoreboard.name == "SBScoreboard"
-            if (!bot.inSkyblock && inSkyblock) bot.log("Entered Skyblock")
-            if (bot.inSkyblock && !inSkyblock) bot.log("Left Skyblock")
-            bot.inSkyblock = inSkyblock
         })
 
         bot.once("spawn", async() => {
