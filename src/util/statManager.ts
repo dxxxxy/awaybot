@@ -25,6 +25,8 @@ export default class StatManager {
 
         //load previous values if they exist
         if (existsSync("stats.json")) Object.entries(this.read()).forEach(([key, value]) => this[key] = value)
+
+        console.log("[StatManager] OK")
     }
 
     private static read() {

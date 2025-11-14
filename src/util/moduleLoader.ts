@@ -1,30 +1,31 @@
+import { Bot } from "mineflayer"
 import * as fs from "node:fs"
 import { Dirent } from "node:fs"
-import { oraPromise } from "ora"
 import path from "path"
-import { importModule } from "../app.js"
-import { debug, debugMessage } from "./utils.js"
 
-const { DISABLED_MODULES } = process.env
+const disabledModules = process.env.DISABLED_MODULES
 
 export default class ModuleLoader {
-    static async loadModules() {
+    static async loadModules(bot: Bot) {
         //get all modules
         const modules = this.recursiveReadDirSync("module")
 
         //get all enabled modules
-        const enabledModules = modules.filter(this.excludeDisabledModules)
-        debug(`Found ${enabledModules.length}/${modules.length} enabled modules`)
+        const enabledModules = modules.filter(module => {
+            if (disabledModules) return !disabledModules.split(",").includes(module.name.split(".")[0])
+            return true
+        })
+        console.log(`[ModuleLoader] Found ${enabledModules.length}/${modules.length} enabled modules`)
 
         //load all enabled modules sequentially
         for (const module of enabledModules) {
-            await oraPromise(() => importModule(module.parentPath), {
-                color: "magenta",
-                spinner: "sand",
-                text: debugMessage(`Loading module: ${module.name}`),
-                successText: debugMessage(`Loaded module: ${module.name}`),
-                failText: debugMessage(`Failed to load module: ${module.name}`)
-            })
+            const mod = await import(`../${module.parentPath}`)
+            if (!mod.default) {
+                console.warn(`[ModuleLoader:${module.name}] Module has no default export! Skipping...`)
+                continue
+            }
+            mod.default(bot)
+            console.log(`[ModuleLoader:${module.name}] OK`)
         }
     }
 
@@ -40,10 +41,5 @@ export default class ModuleLoader {
         })
 
         return dirEntries
-    }
-
-    private static excludeDisabledModules(module: Dirent): boolean {
-        if (DISABLED_MODULES) return !DISABLED_MODULES.split(",").includes(module.name.split(".")[0])
-        return true
     }
 }
