@@ -5,7 +5,9 @@ const bits = /\+(.*) Bits from Cookie Buff!/
 
 // noinspection JSUnusedGlobalSymbols
 export default (bot: Bot) => {
-    //track amount of message as bits get sent 4 times to remain longer in action bar
+    StatManager.register("bits")
+
+    //track amount of message as bits get sent 4 times (to remain longer in action bar)
     let bitsSent = 0
 
     bot.on("actionBar", message => {
@@ -16,10 +18,9 @@ export default (bot: Bot) => {
             if (bitsSent == 4) {
                 bitsSent = 0
 
-                //add bits
-                const amount = m[1]
-                StatManager.bits += parseInt(amount)
-                bot.log(`+${amount} bits`)
+                const amount = m[1].replace(",", "")
+                StatManager["bits"] += parseInt(amount.replace(/,/g, ""))
+                bot.log(`+${amount} bits (total: ${StatManager["bits"]})`)
             }
         }
     })

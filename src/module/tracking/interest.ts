@@ -1,16 +1,7 @@
 import { Bot } from "mineflayer"
-import StatManager from "../../util/statManager.js"
+import SimpleChatTracker from "../../util/simpleChatTracker.js"
 
 const interest = /You have just received (.*) coins as interest in your .*/
 
 // noinspection JSUnusedGlobalSymbols
-export default (bot: Bot) => {
-    bot.addChatPattern("interest", interest)
-
-    // @ts-ignore
-    bot.on("chat:interest", (matches: string[]) => {
-        const amount = interest.exec(matches[0])[1]
-        StatManager.interest += parseInt(amount.replace(/,/g, ""))
-        bot.log(`+${amount} coins from interest`)
-    })
-}
+export default (bot: Bot) => new SimpleChatTracker("interest", interest, "coins").start(bot)
