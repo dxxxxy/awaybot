@@ -15,7 +15,7 @@ export default (bot: Bot) => {
                     headers: {
                         "API-Key": process.env.API_KEY
                     }
-                }).then(res => res.json()).then(data => data.session.online)
+                }).then(res => res.json()).then(data => data.session.online).catch(err => console.log(err))
 
                 return !online
             }, 10000)
