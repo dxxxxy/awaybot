@@ -18,7 +18,7 @@ export default class SimpleChatTracker {
         bot.addChatPattern(this.name, this.pattern)
 
         // @ts-ignore
-        bot.on(`chat:${this.pattern}`, (matches: string[]) => {
+        bot.on(`chat:${this.name}`, (matches: string[]) => {
             const amount = this.pattern.exec(matches[0])[1]
             StatManager[this.name] += parseInt(amount.replace(/,/g, ""))
             bot.log(`+${amount} ${this.currency} from ${this.name} (total: ${StatManager[this.name]})`)
