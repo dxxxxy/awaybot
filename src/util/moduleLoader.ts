@@ -24,8 +24,7 @@ export default class ModuleLoader {
                 console.warn(`[ModuleLoader:${module.name}] Module has no default export! Skipping...`)
                 continue
             }
-            if (typeof mod.default !== "function") {
-                console.warn(`[ModuleLoader:${module.name}] Module default export is not a function! Skipping...`)
+            if (typeof mod.default !== "function" || mod.default.prototype) {
                 continue
             }
             mod.default(bot)

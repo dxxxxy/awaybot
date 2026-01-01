@@ -1,5 +1,5 @@
 import { Bot } from "mineflayer"
-import SimpleChatTracker from "../_simpleChatTracker.js"
+import SimpleChatTracker from "../simpleChatTracker.js"
 
 const fundraising = /UNIVERSAL INCOME: You gained (.*) Coins\./
 
