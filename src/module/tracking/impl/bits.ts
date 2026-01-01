@@ -20,7 +20,7 @@ export default (bot: Bot) => {
 
                 const amount = m[1]
                 StatManager["bits"] += parseInt(amount.replace(/,/g, ""))
-                bot.log(`+${amount} bits (total: ${StatManager["bits"]})`)
+                bot.log(`+${amount} bits (total: ${StatManager["bits"].toLocaleString()})`)
             }
         }
     })

@@ -28,7 +28,7 @@ export default class SimpleChatTracker {
             StatManager[this.name] += parseInt(amount.replace(/,/g, ""))
 
             //log tracking
-            bot.log(`+${amount} ${this.currency} from ${this.name} (total: ${StatManager[this.name]})`)
+            bot.log(`+${amount} ${this.currency} from ${this.name} (total: ${StatManager[this.name].toLocaleString()})`)
         })
     }
 }
