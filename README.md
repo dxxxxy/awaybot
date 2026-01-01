@@ -29,9 +29,9 @@ WARNING: Docker remote image is severely out of date.
             <td>Joins the server when the user leaves and leaves the server when the user joins.</td>
         </tr>
         <tr>
-            <td rowspan=3>Tracking</td>
+            <td rowspan=4>Tracking</td>
             <td>Allowance</td>
-            <td>Tracks daily coin allowance gains.</td>
+            <td>Tracks daily allowance coin gains.</td>
         </tr>
         <tr>
             <td>Bits</td>
@@ -39,7 +39,11 @@ WARNING: Docker remote image is severely out of date.
         </tr>
         <tr>
             <td>Interest</td>
-            <td>Tracks bank interest gains.</td>
+            <td>Tracks bank interest coin gains.</td>
+        </tr>
+        <tr>
+            <td>Fundraising</td>
+            <td>Tracks fundraising coin gains.</td>
         </tr>
     </tbody>
 </table>
