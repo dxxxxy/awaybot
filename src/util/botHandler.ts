@@ -1,10 +1,10 @@
 import { createBot, ScoreBoard } from "mineflayer"
 
 export default class BotHandler {
-    static start = () => {
+    static start = (email: string) => {
         const bot = createBot({
             host: "mc.hypixel.net",
-            username: process.env.EMAIL,
+            username: email,
             auth: "microsoft",
             version: "1.8.9"
         })

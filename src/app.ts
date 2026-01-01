@@ -1,12 +1,15 @@
 import "dotenv/config"
 
+import BotHandler from "./util/botHandler.js"
+import ModuleLoader from "./util/moduleLoader.js"
 import StatManager from "./util/statManager.js"
+
 StatManager.init()
 
-import BotHandler from "./util/botHandler.js"
-const bot = BotHandler.start()
+for (const email of process.env.EMAIL.split(",")) {
+    const bot = BotHandler.start(email)
 
-import ModuleLoader from "./util/moduleLoader.js"
-bot.once("spawn", async() => {
-    await ModuleLoader.loadModules(bot)
-})
+    bot.once("spawn", async() => {
+        await ModuleLoader.loadModules(bot)
+    })
+}

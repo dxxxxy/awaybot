@@ -21,7 +21,7 @@ export default (bot: Bot) => {
             }, 10000)
 
             bot.log("User logged out -> Exiting hibernation")
-            BotHandler.start()
+            // BotHandler.start()
         }
     })
 }
