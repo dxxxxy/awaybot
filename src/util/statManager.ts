@@ -28,7 +28,7 @@ export default class StatManager {
                     .filter(([key]) => key.startsWith("_"))
                     .map(([key, value]) => [key.replace("_", ""), value])
 
-                //write all stats to file
+                //write object with all stats to file
                 writeFileSync(FILE_NAME, JSON.stringify(Object.fromEntries(object), null, 4))
             },
             get: () => this["_" + key]
