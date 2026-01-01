@@ -1,5 +1,5 @@
 import { Bot } from "mineflayer"
-import StatManager from "../../util/statManager.js"
+import StatManager from "../../../util/statManager.js"
 
 const bits = /\+(.*) Bits from Cookie Buff!/
 
@@ -18,7 +18,7 @@ export default (bot: Bot) => {
             if (bitsSent == 4) {
                 bitsSent = 0
 
-                const amount = m[1].replace(",", "")
+                const amount = m[1]
                 StatManager["bits"] += parseInt(amount.replace(/,/g, ""))
                 bot.log(`+${amount} bits (total: ${StatManager["bits"]})`)
             }

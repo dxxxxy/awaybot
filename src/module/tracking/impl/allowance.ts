@@ -1,5 +1,5 @@
 import { Bot } from "mineflayer"
-import SimpleChatTracker from "../../util/simpleChatTracker.js"
+import SimpleChatTracker from "../_simpleChatTracker.js"
 
 const allowance = /ALLOWANCE! You earned (.*) coins!/
 

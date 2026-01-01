@@ -24,6 +24,10 @@ export default class ModuleLoader {
                 console.warn(`[ModuleLoader:${module.name}] Module has no default export! Skipping...`)
                 continue
             }
+            if (typeof mod.default !== "function") {
+                console.warn(`[ModuleLoader:${module.name}] Module default export is not a function! Skipping...`)
+                continue
+            }
             mod.default(bot)
             console.log(`[ModuleLoader:${module.name}] OK`)
         }
