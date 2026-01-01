@@ -12,7 +12,7 @@ export default class StatManager {
 
     static register(key: string, value: any = 0) {
         //avoid reregistering keys
-        if (this[key]) return console.warn(`[StatManager] Stat "${key}" is already registered! Skipping...`)
+        if (this[key]) return
 
         //setup variables (the ghost _variable stores the actual value, while the real variable is the custom getter/setter)
         this[`_${key}`] = this[key] = value
