@@ -26,6 +26,6 @@ for (const account of JSON.parse(readFileSync("accounts.json", "utf8"))) {
 
         bot.log("Logged in to Hypixel")
 
-        await ModuleLoader.loadModules(bot, account.disabledModules.split(","))
+        await ModuleLoader.loadModules(bot, account.disabledModules)
     })
 }
