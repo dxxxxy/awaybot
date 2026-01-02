@@ -1,5 +1,5 @@
 # awaybot
-A fully-modular mineflayer bot for staying afk in a smart manner on Hypixel Skyblock.
+A fully-modular mineflayer bot for staying AFK in a smart manner on Hypixel Skyblock.
 
 WARNING: Docker remote image is severely out of date.
 
@@ -10,8 +10,8 @@ WARNING: Docker remote image is severely out of date.
 ## Features
 - Always ensures it is on private island.
 - Lightweight in terms of CPU and RAM usage.
-- Fully modular and easy to control *(set DISABLED_MODULES in .env)*.
 - Automatically logs any changes to stat variables in a JSON file.
+- Fully modular and easy to control *(set DISABLED_MODULES in .env)*.
 
 ## Modules
 <table>
@@ -24,8 +24,12 @@ WARNING: Docker remote image is severely out of date.
     </thead>
     <tbody>
         <tr>
-            <td rowspan=1>Presence</td>
-            <td>Hibernate</td>
+            <td rowspan=2>Presence</td>
+            <td>Stay</td>
+            <td>Ensures the bot is always in Skyblock on the Private Island.</td>
+        </tr>
+        <tr>
+            <td>Hibernate (requires API_KEY)</td>
             <td>Joins the server when the user leaves and leaves the server when the user joins.</td>
         </tr>
         <tr>

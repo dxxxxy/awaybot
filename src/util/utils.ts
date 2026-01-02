@@ -1,3 +1,7 @@
+export const generateRandomNumberBetweenInclusive = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
 export const waitForeverUntil = (condition: () => Promise<boolean>, interval: number): Promise<void> => {
     return new Promise(resolve => {
         const poller = setInterval(async() => {
