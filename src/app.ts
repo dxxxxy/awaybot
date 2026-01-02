@@ -4,17 +4,14 @@ import ModuleLoader from "./util/moduleLoader.js"
 import State from "./util/state.js"
 import StatManager from "./util/statManager.js"
 
-StatManager.init()
-
-for (const account of JSON.parse(readFileSync("accounts.json", "utf8"))) {
+export const start = async(email: string, uuid: string, apiKey: string, disabledModules: string[]) => {
     const bot = createBot({
         host: "mc.hypixel.net",
-        username: account.email,
-        auth: "microsoft",
-        version: "1.8.9"
+        username: email
     })
-    bot.uuid = account.uuid
-    bot.apiKey = account.apiKey
+    bot.uuid = uuid
+    bot.apiKey = apiKey
+    bot.disabledModules = disabledModules
     bot.state = State.OFFLINE
 
     bot.once("spawn", async() => {
@@ -26,6 +23,12 @@ for (const account of JSON.parse(readFileSync("accounts.json", "utf8"))) {
 
         bot.log("Logged in to Hypixel")
 
-        await ModuleLoader.loadModules(bot, account.disabledModules)
+        await ModuleLoader.loadModules(bot)
     })
+}
+
+StatManager.init()
+
+for (const account of JSON.parse(readFileSync("accounts.json", "utf8"))) {
+    await start(account.email, account.uuid, account.apiKey, account.disabledModules)
 }

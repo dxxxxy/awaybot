@@ -4,12 +4,12 @@ import { Dirent } from "node:fs"
 import path from "path"
 
 export default class ModuleLoader {
-    static async loadModules(bot: Bot, disabledModuleNames: string[]) {
+    static async loadModules(bot: Bot) {
         //get all modules
         const modules = this.recursiveReadDirSync("module")
 
         //get all disabled modules from env variable
-        const disabledModules = modules.filter(module => disabledModuleNames.includes(module.name.split(".")[0]))
+        const disabledModules = modules.filter(module => bot.disabledModules.includes(module.name.split(".")[0]))
 
         console.log(`[ModuleLoader] Disabling modules: ${disabledModules.map(module => module.name).join(", ")}`)
 

@@ -5,6 +5,7 @@ declare module "mineflayer" {
     interface Bot {
         uuid: string;
         apiKey: string;
+        disabledModules: string[];
         state: State;
         log: (msg: string) => void;
     }
