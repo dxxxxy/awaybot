@@ -3,41 +3,46 @@ import * as fs from "node:fs"
 import { Dirent } from "node:fs"
 import path from "path"
 
-const disabledModules = process.env.DISABLED_MODULES
-
 export default class ModuleLoader {
-    static async loadModules(bot: Bot) {
+    static async loadModules(bot: Bot, disabledModuleNames: string[]) {
         //get all modules
         const modules = this.recursiveReadDirSync("module")
 
-        //get all enabled modules
-        const enabledModules = modules.filter(module => {
-            if (disabledModules) return !disabledModules.split(",").includes(module.name.split(".")[0])
-            return true
-        })
-        console.log(`[ModuleLoader] Found ${enabledModules.length}/${modules.length} enabled modules`)
+        //get all disabled modules from env variable
+        const disabledModules = modules.filter(module => disabledModuleNames.includes(module.name.split(".")[0]))
 
-        //load all enabled modules sequentially
+        console.log(`[ModuleLoader] Disabling modules: ${disabledModules.map(module => module.name).join(", ")}`)
+
+        //get all enabled modules by subtracting disabled modules from all modules
+        const enabledModules = modules.filter(module => !disabledModules.includes(module))
+
+        //import and validate modules
+        const validModules: Dirent[] = []
         for (const module of enabledModules) {
             const mod = await import(`../${module.parentPath}`)
-            if (!mod.default) {
-                console.warn(`[ModuleLoader:${module.name}] Module has no default export! Skipping...`)
-                continue
-            }
-            if (typeof mod.default !== "function" || mod.default.prototype) {
-                continue
-            }
+            if (!mod.default) continue
+            if (typeof mod.default !== "function" || mod.default.prototype) continue
+            validModules.push(module)
+        }
+
+        console.log(`[ModuleLoader] Enabling modules: ${validModules.map(module => module.name).join(", ")}`)
+
+        //load all valid modules sequentially
+        for (const module of validModules) {
+            const mod = await import(`../${module.parentPath}`)
             mod.default(bot)
-            console.log(`[ModuleLoader:${module.name}] OK`)
         }
     }
 
     private static recursiveReadDirSync(dirPath: string) {
-        const dirEntries = Array.of<Dirent>()
+        const dirEntries: Dirent[] = []
 
         fs.readdirSync(dirPath, { withFileTypes: true }).forEach(file => {
-            if (file.isDirectory()) dirEntries.push(...this.recursiveReadDirSync(path.join(dirPath, file.name)))
-            if (file.isFile()) {
+            //avoid symbolic links to prevent infinite loops
+            if (file.isSymbolicLink()) return
+
+            else if (file.isDirectory()) dirEntries.push(...this.recursiveReadDirSync(path.join(dirPath, file.name)))
+            else if (file.isFile()) {
                 file.parentPath = path.join(dirPath, file.name)
                 dirEntries.push(file)
             }
