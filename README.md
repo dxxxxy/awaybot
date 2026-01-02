@@ -8,10 +8,12 @@ WARNING: Docker remote image is severely out of date.
 ![](https://img.shields.io/docker/stars/dxxxxy/awaybot?style=for-the-badge&color=9cf&logo=docker)
 
 ## Features
-- Always ensures it is on private island.
+- Tracks various coin or bits gains.
 - Lightweight in terms of CPU and RAM usage.
+- Supports multi-account setups out of the box.
+- Always ensures the player is on private island.
 - Automatically logs any changes to stat variables in a JSON file.
-- Fully modular and easy to control *(set DISABLED_MODULES in .env)*.
+- Fully modular and easy to control (see disabledModules in [Configuration](#configuration)).
 
 ## Modules
 <table>
@@ -29,7 +31,7 @@ WARNING: Docker remote image is severely out of date.
             <td>Ensures the bot is always in Skyblock on the Private Island.</td>
         </tr>
         <tr>
-            <td>Hibernate (requires API_KEY)</td>
+            <td>Hibernate (requires apiKey)</td>
             <td>Joins the server when the user leaves and leaves the server when the user joins.</td>
         </tr>
         <tr>
@@ -60,14 +62,26 @@ export default (bot: Bot) => {
 }
 ```
 
-## Docker
-Run the following command, replacing the environment variables from `.example.env` with your own values:
-
-```bash
-docker run --name awaybot --pull=always --detach -e EMAIL=x@x.x -e UUID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -e API_KEY=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx dxxxxy/awaybot
+## Configuration
+You can configure the bot by creating an `accounts.json` file in the root directory. The file should contain an array of account objects with the following properties:
+```json
+[
+    {
+        "email": "xxx@xxx.xxx",
+        "uuid": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "apiKey": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        "disabledModules": [
+            "hibernate"
+        ]
+    },
+    {
+        "email": "xxx@xxx.xxx",
+        "uuid": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "apiKey": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        "disabledModules": []
+    }
+]
 ```
-
-Afterward, you can view and follow (`-f`) the logs with `docker logs awaybot -f` to view instructions on how to log into your Minecraft Account.
 
 ## Disclaimer
 This is for educational purposes only. I am not responsible for any damage caused by this tool.
