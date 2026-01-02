@@ -11,6 +11,7 @@ export const start = async(email: string, uuid: string, apiKey: string, disabled
         auth: "microsoft",
         version: "1.8.9"
     })
+    bot.email = email
     bot.uuid = uuid
     bot.apiKey = apiKey
     bot.disabledModules = disabledModules

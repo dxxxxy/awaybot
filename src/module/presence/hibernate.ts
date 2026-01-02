@@ -22,7 +22,7 @@ export default (bot: Bot) => {
             }, 10000)
 
             bot.log("User logged out -> Exiting hibernation")
-            await start(bot.username, bot.uuid, bot.apiKey, bot.disabledModules)
+            await start(bot.email, bot.uuid, bot.apiKey, bot.disabledModules)
         }
     })
 }

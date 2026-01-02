@@ -3,6 +3,7 @@ import State from "../util/state.js"
 
 declare module "mineflayer" {
     interface Bot {
+        email: string;
         uuid: string;
         apiKey: string;
         disabledModules: string[];
