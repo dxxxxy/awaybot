@@ -82,6 +82,7 @@ You can configure the bot by creating an `accounts.json` file in the root direct
     }
 ]
 ```
+> You can disable an account by adding `"disabled": true` to the account object.
 
 ## Disclaimer
 This is for educational purposes only. I am not responsible for any damage caused by this tool.

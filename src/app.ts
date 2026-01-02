@@ -7,7 +7,9 @@ import StatManager from "./util/statManager.js"
 export const start = async(email: string, uuid: string, apiKey: string, disabledModules: string[]) => {
     const bot = createBot({
         host: "mc.hypixel.net",
-        username: email
+        username: email,
+        auth: "microsoft",
+        version: "1.8.9"
     })
     bot.uuid = uuid
     bot.apiKey = apiKey
@@ -30,5 +32,6 @@ export const start = async(email: string, uuid: string, apiKey: string, disabled
 StatManager.init()
 
 for (const account of JSON.parse(readFileSync("accounts.json", "utf8"))) {
+    if (account.disabled) continue
     await start(account.email, account.uuid, account.apiKey, account.disabledModules)
 }
