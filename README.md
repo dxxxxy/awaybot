@@ -1,8 +1,6 @@
 # awaybot
 A fully-modular mineflayer bot for staying AFK in a smart manner on Hypixel Skyblock.
 
-WARNING: Docker remote image is severely out of date.
-
 ![](https://img.shields.io/docker/image-size/dxxxxy/awaybot/latest?style=for-the-badge&color=9cf&logo=docker)
 ![](https://img.shields.io/docker/pulls/dxxxxy/awaybot?style=for-the-badge&color=9cf&logo=docker)
 ![](https://img.shields.io/docker/stars/dxxxxy/awaybot?style=for-the-badge&color=9cf&logo=docker)
@@ -83,6 +81,16 @@ You can configure the bot by creating an `accounts.json` file in the root direct
 ]
 ```
 > You can disable an account by adding `"disabled": true` to the account object.
+
+## Docker
+You can run the bot using Docker provided you have created an `accounts.json` configuration file in the repository you are executing the command. 
+
+```shell
+docker run --name awaybot --pull=always --detach -v ${pwd}/accounts.json:/awaybot/accounts.json:ro dxxxxy/awaybot
+```
+> Note: docker volume mounts require absolute path. Adjust `${pwd}`, default for powershell,  accordingly for your OS.
+
+Afterward, you can view and follow (`-f`) the logs with `docker logs awaybot -f` to view instructions on how to log into your Minecraft Account.
 
 ## Disclaimer
 This is for educational purposes only. I am not responsible for any damage caused by this tool.
