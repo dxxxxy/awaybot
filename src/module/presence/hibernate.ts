@@ -1,5 +1,4 @@
 import { Bot } from "mineflayer"
-import BotHandler from "../../util/botHandler.js"
 import { waitForeverUntil } from "../../util/utils.js"
 
 // noinspection JSUnusedGlobalSymbols
@@ -11,9 +10,9 @@ export default (bot: Bot) => {
 
             //wait until player logs off to start the bot
             await waitForeverUntil(async() => {
-                const online = await fetch(`https://api.hypixel.net/v2/status?uuid=${process.env.UUID}`, {
+                const online = await fetch(`https://api.hypixel.net/v2/status?uuid=${bot.uuid}`, {
                     headers: {
-                        "API-Key": process.env.API_KEY
+                        "API-Key": bot.apiKey
                     }
                 }).then(res => res.json()).then(data => data.session.online).catch(err => console.log(err))
 
@@ -21,7 +20,7 @@ export default (bot: Bot) => {
             }, 10000)
 
             bot.log("User logged out -> Exiting hibernation")
-            // BotHandler.start()
+            //TODO: restart
         }
     })
 }

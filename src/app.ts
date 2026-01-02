@@ -1,4 +1,4 @@
-import "dotenv/config"
+import { readFileSync } from "fs"
 import { createBot } from "mineflayer"
 import ModuleLoader from "./util/moduleLoader.js"
 import State from "./util/state.js"
@@ -6,13 +6,15 @@ import StatManager from "./util/statManager.js"
 
 StatManager.init()
 
-for (const email of process.env.EMAIL.split(",")) {
+for (const account of JSON.parse(readFileSync("accounts.json", "utf8"))) {
     const bot = createBot({
         host: "mc.hypixel.net",
-        username: email,
+        username: account.email,
         auth: "microsoft",
         version: "1.8.9"
     })
+    bot.uuid = account.uuid
+    bot.apiKey = account.apiKey
     bot.state = State.OFFLINE
 
     bot.once("spawn", async() => {
@@ -24,6 +26,6 @@ for (const email of process.env.EMAIL.split(",")) {
 
         bot.log("Logged in to Hypixel")
 
-        await ModuleLoader.loadModules(bot)
+        await ModuleLoader.loadModules(bot, account.disabledModules.split(","))
     })
 }
