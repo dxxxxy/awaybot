@@ -8,7 +8,6 @@ export default async(bot: Bot) => {
         bot.state = State.OFFLINE
     })
 
-    // @ts-ignore
     while (bot.state != State.OFFLINE) {
         //save past state for state changes
         const pastState = bot.state
@@ -50,6 +49,6 @@ export default async(bot: Bot) => {
         }
 
         //humanize wait time
-        await bot.waitForTicks(20 * generateRandomNumberBetweenInclusive(4, 10)) //wait between 4-10 seconds
+        await bot.waitForTicks(20 * generateRandomNumberBetweenInclusive(4, 10))
     }
 }

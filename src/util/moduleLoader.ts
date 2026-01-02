@@ -8,7 +8,7 @@ export default class ModuleLoader {
         //get all modules
         const modules = this.recursiveReadDirSync("module")
 
-        //get all disabled modules from env variable
+        //get all disabled modules
         const disabledModules = modules.filter(module => bot.disabledModules.includes(module.name.split(".")[0]))
 
         console.log(`[ModuleLoader] Disabling modules: ${disabledModules.map(module => module.name).join(", ")}`)
@@ -16,12 +16,17 @@ export default class ModuleLoader {
         //get all enabled modules by subtracting disabled modules from all modules
         const enabledModules = modules.filter(module => !disabledModules.includes(module))
 
-        //import and validate modules
+        //validate modules
         const validModules: Dirent[] = []
         for (const module of enabledModules) {
             const mod = await import(`../${module.parentPath}`)
+
+            //skip modules without default export
             if (!mod.default) continue
-            if (typeof mod.default !== "function" || mod.default.prototype) continue
+
+            //skip classes or non functions
+            if (typeof mod.default !== "function" || mod.default.prototype || (typeof mod.default === "function" && /^class\s/.test(Function.prototype.toString.call(mod.default)))) continue
+
             validModules.push(module)
         }
 
