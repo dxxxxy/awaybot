@@ -15,6 +15,12 @@ export default async(bot: Bot) => {
         //get primary visible scoreboard
         const scoreboard = Object.values(bot.scoreboard)[0]
 
+        //check if scoreboard exists (can be null for a short while if bad ping/tps)
+        if (!scoreboard) {
+            await bot.waitForTicks(20)
+            continue
+        }
+
         //compute current location
         const inSkyblock = scoreboard.name == "SBScoreboard"
         const inIsland = scoreboard.items.some(item => item.displayName.toString().includes("Your Isla"))
