@@ -29,18 +29,14 @@ export const start = (email: string, uuid: string, apiKey: string, disabledModul
 
         bot.log("Logged in to Hypixel")
 
+        await mineflayerViewer(bot, { port: 3007, firstPerson: false })
         await ModuleLoader.loadModules(bot)
     })
-
-    return bot
 }
 
 StatManager.init()
 
-let multiAccountPortOffset = 0
 for (const account of JSON.parse(readFileSync("accounts.json", "utf8"))) {
     if (account.disabled) continue
-    const bot = start(account.email, account.uuid, account.apiKey, account.disabledModules)
-    mineflayerViewer(bot, { port: 3007 + multiAccountPortOffset, firstPerson: false })
-    multiAccountPortOffset++
+    start(account.email, account.uuid, account.apiKey, account.disabledModules)
 }
