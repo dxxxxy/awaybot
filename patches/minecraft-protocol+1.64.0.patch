@@ -1,12 +1,21 @@
 diff --git a/node_modules/minecraft-protocol/src/client/play.js b/node_modules/minecraft-protocol/src/client/play.js
-index 71ad739..7db4cda 100644
+index 71ad739..088520e 100644
 --- a/node_modules/minecraft-protocol/src/client/play.js
 +++ b/node_modules/minecraft-protocol/src/client/play.js
-@@ -53,6 +53,7 @@ module.exports = function (client, options) {
+@@ -53,6 +53,16 @@ module.exports = function (client, options) {
          client.write('configuration_acknowledged', {})
        }
        client.state = states.CONFIGURATION
-+      client.write('settings', {locale: "en_us", viewDistance: 10, chatFlags: 0, chatColors: true, skinParts: 127, mainHand: 1, enableTextFiltering: false, enableServerListing: true})
++      client.write('settings', {
++        locale: (options && options.locale) || 'en_us',
++        viewDistance: (options && options.viewDistance) || 10,
++        chatFlags: (options && options.chatFlags) || 0,
++        chatColors: (options && options.chatColors) != null ? options.chatColors : true,
++        skinParts: (options && options.skinParts) || 127,
++        mainHand: (options && options.mainHand) || 1,
++        enableTextFiltering: (options && options.enableTextFiltering) != null ? options.enableTextFiltering : false,
++        enableServerListing: (options && options.enableServerListing) != null ? options.enableServerListing : true
++      })
        client.once('select_known_packs', () => {
          client.write('select_known_packs', { packs: [] })
        })
