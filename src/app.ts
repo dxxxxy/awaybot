@@ -5,7 +5,7 @@ import ModuleLoader from "./util/moduleLoader.js"
 import State from "./util/state.js"
 import StatManager from "./util/statManager.js"
 
-export const start = (email: string, uuid: string, apiKey: string, disabledModules: string[]) => {
+export const start = (index: number, email: string, uuid: string, apiKey: string, disabledModules: string[]) => {
     const bot = createBot({
         host: "mc.hypixel.net",
         username: email,
@@ -14,6 +14,7 @@ export const start = (email: string, uuid: string, apiKey: string, disabledModul
         hideErrors: true,
         skipValidation: true
     })
+    bot.index = index
     bot.email = email
     bot.uuid = uuid
     bot.apiKey = apiKey
@@ -29,14 +30,14 @@ export const start = (email: string, uuid: string, apiKey: string, disabledModul
 
         bot.log("Logged in to Hypixel")
 
-        await mineflayerViewer(bot, { port: 3007, firstPerson: false })
+        await mineflayerViewer(bot, { port: 3007 + index, firstPerson: false })
         await ModuleLoader.loadModules(bot)
     })
 }
 
 StatManager.init()
 
-for (const account of JSON.parse(readFileSync("accounts.json", "utf8"))) {
+for (const [index, account] of (JSON.parse(readFileSync("accounts.json", "utf8"))).entries()) {
     if (account.disabled) continue
-    start(account.email, account.uuid, account.apiKey, account.disabledModules)
+    start(index, account.email, account.uuid, account.apiKey, account.disabledModules)
 }
