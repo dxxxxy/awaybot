@@ -1,15 +1,18 @@
 import { readFileSync } from "fs"
 import { createBot } from "mineflayer"
+import { mineflayer as mineflayerViewer } from "prismarine-viewer"
 import ModuleLoader from "./util/moduleLoader.js"
 import State from "./util/state.js"
 import StatManager from "./util/statManager.js"
 
-export const start = async(email: string, uuid: string, apiKey: string, disabledModules: string[]) => {
+export const start = (email: string, uuid: string, apiKey: string, disabledModules: string[]) => {
     const bot = createBot({
         host: "mc.hypixel.net",
         username: email,
         auth: "microsoft",
-        version: "1.8.9"
+        version: "1.21.11",
+        hideErrors: true,
+        skipValidation: true
     })
     bot.email = email
     bot.uuid = uuid
@@ -28,11 +31,16 @@ export const start = async(email: string, uuid: string, apiKey: string, disabled
 
         await ModuleLoader.loadModules(bot)
     })
+
+    return bot
 }
 
 StatManager.init()
 
+let multiAccountPortOffset = 0
 for (const account of JSON.parse(readFileSync("accounts.json", "utf8"))) {
     if (account.disabled) continue
-    await start(account.email, account.uuid, account.apiKey, account.disabledModules)
+    const bot = start(account.email, account.uuid, account.apiKey, account.disabledModules)
+    mineflayerViewer(bot, { port: 3007 + multiAccountPortOffset, firstPerson: false })
+    multiAccountPortOffset++
 }
