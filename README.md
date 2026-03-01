@@ -1,6 +1,8 @@
 # awaybot
 A fully-modular mineflayer bot for staying AFK in a smart manner on Hypixel Skyblock.
 
+> Note: This project now uses a patched version of mineflayer to be compatible with Hypixel on 1.21+. You have nothing to do, the patches apply when you install dependencies. See [patches](#patches).
+
 ![](https://img.shields.io/docker/image-size/dxxxxy/awaybot/latest?style=for-the-badge&color=9cf&logo=docker)
 ![](https://img.shields.io/docker/pulls/dxxxxy/awaybot?style=for-the-badge&color=9cf&logo=docker)
 ![](https://img.shields.io/docker/stars/dxxxxy/awaybot?style=for-the-badge&color=9cf&logo=docker)
@@ -92,6 +94,17 @@ docker run --name awaybot --pull=always --detach -v ${pwd}/accounts.json:/awaybo
 > Note: docker volume mounts require absolute path. Adjust `${pwd}`, default for powershell,  accordingly for your OS.
 
 Afterward, you can view and follow (`-f`) the logs with `docker logs awaybot -f` to view instructions on how to log into your Minecraft Account.
+
+## Patches
+- `minecraft-protocol`: https://github.com/PrismarineJS/mineflayer/issues/3623#issuecomment-2816938153
+
+Fixes an issue in the configuration handshake on custom servers like Hypixel which causes the bot to not be able to connect.
+Patch sends a manual configuration packet.
+
+- `prismarine-nbt`: https://github.com/PrismarineJS/mineflayer/issues/3787#issue-3731375650
+
+Fixes an issue in the nbt parsing of custom/invalid tags on custom servers like Hypixel which causes the bot to crash.
+Patch ignores the custom/invalid tags.
 
 ## Disclaimer
 This is for educational purposes only. I am not responsible for any damage caused by this tool.

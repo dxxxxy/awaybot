@@ -1,20 +1,26 @@
 {
     "name": "awaybot",
-    "version": "3.1.0",
+    "version": "3.2.0",
     "main": "app.js",
     "author": "dxxxxy",
     "type": "module",
     "license": "GPL-3.0",
     "scripts": {
         "prestart": "rimraf dist && tsc --skipLibCheck && copyfiles accounts.json dist",
-        "start": "cd dist && node app.js"
+        "start": "cd dist && node app.js",
+        "postinstall": "patch-package"
     },
     "dependencies": {
-        "mineflayer": "^4.33.0"
+        "canvas": "^3.2.1",
+        "mineflayer": "^4.35.0",
+        "prismarine-viewer": "^1.33.0"
     },
     "devDependencies": {
-        "@types/node": "^24.10.4",
+        "@types/node": "^25.3.2",
         "copyfiles": "^2.4.1",
-        "rimraf": "^6.1.2"
+        "patch-package": "^8.0.1",
+        "postinstall-postinstall": "^2.1.0",
+        "rimraf": "^6.1.3",
+        "typescript": "^5.9.3"
     }
 }
