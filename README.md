@@ -14,7 +14,8 @@ A fully-modular mineflayer bot for staying AFK in a smart manner on Hypixel Skyb
 - Supports multi-account setups out of the box.
 - Always ensures the player is on private island.
 - Automatically logs any changes to stat variables in a JSON file.
-- Fully modular and easy to control (see disabledModules in [Configuration](#configuration)).
+- Fully modular and easy to control (see *disabledModules* in [Configuration](#configuration)).
+- Visualization of the bot's world is available at http://localhost:3007 (incremented by 1 for each account beyond the first) for debugging purposes.
 
 ## Modules
 <table>
