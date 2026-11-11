@@ -90,9 +90,12 @@ You can configure the bot by creating an `accounts.json` file in the root direct
 You can run the bot using Docker provided you have created an `accounts.json` configuration file in the repository you are executing the command. 
 
 ```shell
-docker run --name awaybot --pull=always --detach -v ${pwd}/accounts.json:/awaybot/accounts.json:ro dxxxxy/awaybot
+docker run --name awaybot --pull=always --detach -v ${pwd}/accounts.json:/awaybot/accounts.json:ro -v awaybot-data:/awaybot/data dxxxxy/awaybot
 ```
 > Note: docker volume mounts require absolute path. Adjust `${pwd}`, default for powershell,  accordingly for your OS.
+
+The `awaybot-data` volume keeps the tracked stats (`stats.json`) and the Microsoft login tokens, so they survive updating or recreating the container.
+Outside Docker, the locations can be changed with the `STATS_FILE` and `AUTH_CACHE_DIR` environment variables.
 
 Afterward, you can view and follow (`-f`) the logs with `docker logs awaybot -f` to view instructions on how to log into your Minecraft Account.
 

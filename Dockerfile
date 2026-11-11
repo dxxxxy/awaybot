@@ -23,6 +23,10 @@ COPY --from=build /awaybot/dist .
 COPY --from=build /awaybot/node_modules node_modules
 COPY package*.json .
 
-WORKDIR /awaybot/
+#persist stats and Microsoft auth tokens across container recreation (mount a named volume here)
+ENV STATS_FILE=/awaybot/data/stats.json
+ENV AUTH_CACHE_DIR=/awaybot/data/auth
+RUN mkdir -p /awaybot/data/auth
+VOLUME /awaybot/data
 
 CMD [ "node", "app.js" ]

@@ -1,7 +1,9 @@
-import { existsSync, readFileSync, writeFileSync } from "fs"
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs"
+import path from "path"
 
-//relative to the working directory (dist/ when started via npm start, so this resolves to the project root)
-const FILE_NAME = "../stats.json"
+//STATS_FILE overrides the location (the Docker image points it into a volume)
+//default is relative to the working directory (dist/ when started via npm start, so this resolves to the project root)
+const FILE_NAME = process.env.STATS_FILE || "../stats.json"
 
 export default class StatManager {
     private static stats: Record<string, number> = {}
@@ -42,6 +44,7 @@ export default class StatManager {
     }
 
     private static save() {
+        mkdirSync(path.dirname(FILE_NAME), { recursive: true })
         writeFileSync(FILE_NAME, JSON.stringify(this.stats, null, 4))
     }
 }

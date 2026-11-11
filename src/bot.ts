@@ -26,7 +26,9 @@ export const start = (index: number, account: Account, reconnectAttempt = 0) => 
         auth: "microsoft",
         version: "26.1",
         hideErrors: true,
-        skipValidation: true
+        skipValidation: true,
+        //AUTH_CACHE_DIR overrides where Microsoft tokens are cached (the Docker image points it into a volume)
+        profilesFolder: process.env.AUTH_CACHE_DIR || undefined
     })
     bot.index = index
     bot.email = account.email
