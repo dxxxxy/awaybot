@@ -1,5 +1,5 @@
 import { Bot } from "mineflayer"
-import { start } from "../../app.js"
+import { start } from "../../bot.js"
 import { waitForeverUntil } from "../../util/utils.js"
 
 // noinspection JSUnusedGlobalSymbols
@@ -22,7 +22,7 @@ export default (bot: Bot) => {
             }, 10000)
 
             bot.log("User logged out -> Exiting hibernation")
-            start(bot.index, bot.email, bot.uuid, bot.apiKey, bot.disabledModules)
+            start(bot.index, { email: bot.email, uuid: bot.uuid, apiKey: bot.apiKey, disabledModules: bot.disabledModules })
         }
     })
 }
