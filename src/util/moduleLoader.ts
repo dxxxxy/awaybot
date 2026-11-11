@@ -1,58 +1,48 @@
 import { Bot } from "mineflayer"
-import * as fs from "node:fs"
-import { Dirent } from "node:fs"
-import path from "path"
+import { readdirSync } from "node:fs"
+import path from "node:path"
+import { pathToFileURL } from "node:url"
+
+//resolved relative to this file (dist/util/) rather than the working directory
+const MODULE_DIR = path.join(import.meta.dirname, "..", "module")
+
+type ModuleEntry = (bot: Bot) => unknown
+
+interface LoadedModule {
+    name: string
+    run: ModuleEntry
+}
 
 export default class ModuleLoader {
     static async loadModules(bot: Bot) {
-        //get all modules
-        const modules = this.recursiveReadDirSync("module")
+        //get all module files (recursive readdir does not follow symbolic links)
+        const files = readdirSync(MODULE_DIR, { withFileTypes: true, recursive: true })
+            .filter(file => file.isFile() && file.name.endsWith(".js"))
 
         //get all disabled modules
-        const disabledModules = modules.filter(module => bot.disabledModules.includes(module.name.split(".")[0]))
+        const isDisabled = (fileName: string) => bot.disabledModules.includes(fileName.split(".")[0])
+        console.log(`[ModuleLoader] Disabling modules: ${files.filter(file => isDisabled(file.name)).map(file => file.name).join(", ")}`)
 
-        console.log(`[ModuleLoader] Disabling modules: ${disabledModules.map(module => module.name).join(", ")}`)
+        //validate enabled modules
+        const validModules: LoadedModule[] = []
+        for (const file of files) {
+            if (isDisabled(file.name)) continue
 
-        //get all enabled modules by subtracting disabled modules from all modules
-        const enabledModules = modules.filter(module => !disabledModules.includes(module))
+            const mod = await import(pathToFileURL(path.join(file.parentPath, file.name)).href)
 
-        //validate modules
-        const validModules: Dirent[] = []
-        for (const module of enabledModules) {
-            const mod = await import(`../${module.parentPath}`)
+            //skip modules without a default export function (e.g. helpers like simpleChatTracker), or exporting a class
+            if (typeof mod.default !== "function" || /^class\s/.test(Function.prototype.toString.call(mod.default))) continue
 
-            //skip modules without default export
-            if (!mod.default) continue
-
-            //skip classes or non functions
-            if (typeof mod.default !== "function" || mod.default.prototype || (typeof mod.default === "function" && /^class\s/.test(Function.prototype.toString.call(mod.default)))) continue
-
-            validModules.push(module)
+            validModules.push({ name: file.name, run: mod.default })
         }
 
         console.log(`[ModuleLoader] Enabling modules: ${validModules.map(module => module.name).join(", ")}`)
 
-        //load all valid modules sequentially
+        //start all valid modules sequentially (not awaited, as modules like stay run for the bot's whole lifetime)
         for (const module of validModules) {
-            const mod = await import(`../${module.parentPath}`)
-            mod.default(bot)
+            Promise.resolve()
+                .then(() => module.run(bot))
+                .catch(err => bot.log(`Module ${module.name} failed: ${err instanceof Error ? err.stack : err}`))
         }
-    }
-
-    private static recursiveReadDirSync(dirPath: string) {
-        const dirEntries: Dirent[] = []
-
-        fs.readdirSync(dirPath, { withFileTypes: true }).forEach(file => {
-            //avoid symbolic links to prevent infinite loops
-            if (file.isSymbolicLink()) return
-
-            else if (file.isDirectory()) dirEntries.push(...this.recursiveReadDirSync(path.join(dirPath, file.name)))
-            else if (file.isFile()) {
-                file.parentPath = path.join(dirPath, file.name)
-                dirEntries.push(file)
-            }
-        })
-
-        return dirEntries
     }
 }
