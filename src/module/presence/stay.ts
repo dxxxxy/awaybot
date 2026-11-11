@@ -2,6 +2,32 @@ import { Bot } from "mineflayer"
 import State from "../../util/state.js"
 import { generateRandomNumberBetweenInclusive, sleep } from "../../util/utils.js"
 
+//shape of Hypixel's /locraw reply, e.g. {"server":"mini29DC","gametype":"SKYBLOCK","mode":"dynamic","map":"Private Island"}
+interface Locraw {
+    server?: string
+    gametype?: string
+    mode?: string
+    map?: string
+}
+
+const parseLocraw = (message: string): Locraw | null => {
+    if (!message.startsWith("{")) return null
+
+    try {
+        const parsed: unknown = JSON.parse(message)
+        return typeof parsed === "object" && parsed !== null && "server" in parsed ? parsed as Locraw : null
+    } catch {
+        return null
+    }
+}
+
+const locrawToState = (locraw: Locraw) => {
+    //limbo (AFK kicks, failed transfers) only reports {"server":"limbo"}
+    if (locraw.server === "limbo") return State.LIMBO
+    if (locraw.gametype !== "SKYBLOCK") return State.HYPIXEL
+    return locraw.map === "Private Island" ? State.ISLAND : State.SKYBLOCK
+}
+
 // noinspection JSUnusedGlobalSymbols
 export default async (bot: Bot) => {
     bot.on("end", () => {
@@ -10,49 +36,44 @@ export default async (bot: Bot) => {
 
     //listen for poll result to determine where we are
     bot.on("message", (jsonMsg, position) => {
+        if (position != "system") return
+
         //check for official /locraw poll messages
-        if (jsonMsg.toString().startsWith("{") && position == "system") {
-            //save past state for state changes
-            const pastState = bot.state
+        const locraw = parseLocraw(jsonMsg.toString())
+        if (!locraw) return
 
-            //check if we are in hypixel
-            if (jsonMsg.toString().includes("\"gametype\":\"PROTOTYPE\"") || jsonMsg.toString().includes("\"gametype\":\"MAIN\"")) {
-                bot.state = State.HYPIXEL
+        //save past state for state changes
+        const pastState = bot.state
+        bot.state = locrawToState(locraw)
+
+        //log state changes
+        if (bot.state != pastState) {
+            switch (bot.state) {
+                case State.LIMBO:
+                    bot.log("Entered Limbo")
+                    break
+                case State.HYPIXEL:
+                    bot.log(`Entered Hypixel Lobby (${locraw.gametype ?? "unknown"})`)
+                    break
+                case State.SKYBLOCK:
+                    bot.log(`Entered Skyblock (${locraw.map ?? "unknown"})`)
+                    break
+                case State.ISLAND:
+                    bot.log("Entered Island")
+                    break
             }
+        }
 
-            //check if we are in skyblock
-            if (jsonMsg.toString().includes("\"gametype\":\"SKYBLOCK\"")) {
-                bot.state = State.SKYBLOCK
-
-                //check if we are on our island
-                if (jsonMsg.toString().includes("\"map\":\"Private Island\"")) {
-                    bot.state = State.ISLAND
-                }
-            }
-
-            //log state changes
-            if (bot.state != pastState) {
-                switch (bot.state) {
-                    case State.HYPIXEL:
-                        bot.log("Entered Hypixel Lobby")
-                        break
-                    case State.SKYBLOCK:
-                        bot.log("Entered Skyblock")
-                        break
-                    case State.ISLAND:
-                        bot.log("Entered Island")
-                        break
-                }
-            }
-
-            //attempt to enter skyblock/island if not already in
-            if (bot.state == State.HYPIXEL) {
-                bot.log("Not in Skyblock -> Attempting to Enter Skyblock")
-                bot.chat("/play sb")
-            } else if (bot.state == State.SKYBLOCK) {
-                bot.log("Not in Island -> Attempting to Enter Island")
-                bot.chat("/is")
-            }
+        //attempt to enter skyblock/island if not already in
+        if (bot.state == State.LIMBO) {
+            bot.log("In Limbo -> Attempting to Enter Lobby")
+            bot.chat("/lobby")
+        } else if (bot.state == State.HYPIXEL) {
+            bot.log("Not in Skyblock -> Attempting to Enter Skyblock")
+            bot.chat("/play sb")
+        } else if (bot.state == State.SKYBLOCK) {
+            bot.log("Not in Island -> Attempting to Enter Island")
+            bot.chat("/is")
         }
     })
 

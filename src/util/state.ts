@@ -2,7 +2,8 @@ enum State {
     OFFLINE,
     HYPIXEL,
     SKYBLOCK,
-    ISLAND
+    ISLAND,
+    LIMBO
 }
 
 export default State
