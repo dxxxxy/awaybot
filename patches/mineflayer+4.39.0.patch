@@ -1,0 +1,23 @@
+diff --git a/node_modules/mineflayer/lib/plugins/resource_pack.js b/node_modules/mineflayer/lib/plugins/resource_pack.js
+index edadcbc..34002cc 100644
+--- a/node_modules/mineflayer/lib/plugins/resource_pack.js
++++ b/node_modules/mineflayer/lib/plugins/resource_pack.js
+@@ -17,7 +17,8 @@ function inject (bot) {
+   bot._client.on('add_resource_pack', (data) => { // Emits the same as resource_pack_send but sends uuid rather than hash because that's how active packs are tracked
+     const uuid = new UUID(data.uuid)
+     // Adding the pack to a set by uuid
+-    latestUUID = uuid
++    // keep the raw string: the UUID serializer cannot parse uuid-1345 objects and would answer with the zero UUID
++    latestUUID = data.uuid
+     activeResourcePacks[uuid] = data.url
+ 
+     bot.emit('resourcePack', data.url, uuid)
+@@ -44,7 +45,7 @@ function inject (bot) {
+     if (bot.supportFeature('resourcePackUsesUUID')) {
+       uuid = new UUID(data.uuid)
+       bot.emit('resourcePack', uuid, data.url)
+-      latestUUID = uuid
++      latestUUID = data.uuid
+     } else {
+       bot.emit('resourcePack', data.url, data.hash)
+       latestHash = data.hash

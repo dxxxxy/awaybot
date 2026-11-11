@@ -97,6 +97,11 @@ docker run --name awaybot --pull=always --detach -v ${pwd}/accounts.json:/awaybo
 Afterward, you can view and follow (`-f`) the logs with `docker logs awaybot -f` to view instructions on how to log into your Minecraft Account.
 
 ## Patches
+- `mineflayer`: fixes resource pack responses being sent with an all-zero UUID (mineflayer passes a `uuid-1345` object to a serializer expecting a string).
+
+Hypixel Skyblock servers send a resource pack while transferring and hold the configuration phase open until that exact pack is acknowledged, so without this the bot hangs on `/play sb` until the server closes the connection.
+Patch answers with the UUID string the server sent.
+
 - `minecraft-protocol`: no longer patched. The configuration handshake fix (https://github.com/PrismarineJS/mineflayer/issues/3623) is included upstream since `minecraft-protocol@1.68.0`.
 
 - `prismarine-nbt`: https://github.com/PrismarineJS/mineflayer/issues/3787#issue-3731375650
