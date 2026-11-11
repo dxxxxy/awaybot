@@ -1,4 +1,4 @@
-FROM node:24.12.0-alpine AS build
+FROM node:24.22.2-alpine AS build
 WORKDIR /awaybot
 
 RUN apk update
@@ -13,7 +13,7 @@ COPY tsconfig.json .
 RUN npx tsc
 RUN npm prune --omit=dev
 
-FROM node:24.12.0-alpine AS production
+FROM node:24.22.2-alpine AS production
 WORKDIR /awaybot
 
 RUN apk update
