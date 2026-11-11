@@ -10,7 +10,7 @@ export const start = (index: number, email: string, uuid: string, apiKey: string
         host: "mc.hypixel.net",
         username: email,
         auth: "microsoft",
-        version: "1.21.11",
+        version: "26.3",
         hideErrors: true,
         skipValidation: true
     })
@@ -21,7 +21,7 @@ export const start = (index: number, email: string, uuid: string, apiKey: string
     bot.disabledModules = disabledModules
     bot.state = State.OFFLINE
 
-    bot.once("spawn", async() => {
+    bot.once("spawn", async () => {
         bot.state = State.HYPIXEL
 
         bot.log = (message: string) => {
