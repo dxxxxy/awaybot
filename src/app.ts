@@ -10,7 +10,7 @@ export const start = (index: number, email: string, uuid: string, apiKey: string
         host: "mc.hypixel.net",
         username: email,
         auth: "microsoft",
-        version: "26.3",
+        version: "26.1",
         hideErrors: true,
         skipValidation: true
     })
