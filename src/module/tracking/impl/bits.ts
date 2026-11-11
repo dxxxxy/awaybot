@@ -11,17 +11,20 @@ export default (bot: Bot) => {
     let bitsSent = 0
 
     bot.on("actionBar", message => {
-        let m: string[] | null
-        if ((m = bits.exec(message.toString())) != null) {
-            bitsSent++
+        const m = bits.exec(message.toString())
+        if (m == null) return
 
-            if (bitsSent == 4) {
-                bitsSent = 0
+        bitsSent++
 
-                const amount = m[1]
-                StatManager["bits"] += parseInt(amount.replace(/,/g, ""))
-                bot.log(`+${amount} bits (total: ${StatManager["bits"].toLocaleString()})`)
-            }
+        if (bitsSent == 4) {
+            bitsSent = 0
+
+            const amount = m[1]
+            const parsed = parseInt(amount.replace(/,/g, ""))
+            if (Number.isNaN(parsed)) return
+
+            const total = StatManager.add("bits", parsed)
+            bot.log(`+${amount} bits (total: ${total.toLocaleString()})`)
         }
     })
 }

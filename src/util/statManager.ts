@@ -1,37 +1,47 @@
 import { existsSync, readFileSync, writeFileSync } from "fs"
 
+//relative to the working directory (dist/ when started via npm start, so this resolves to the project root)
 const FILE_NAME = "../stats.json"
 
 export default class StatManager {
+    private static stats: Record<string, number> = {}
+
     static init() {
-        //if a previous stat file exists, register key value pairs
-        if (existsSync(FILE_NAME)) {
-            Object.entries(JSON.parse(readFileSync(FILE_NAME, "utf8"))).forEach(([key, value]) => StatManager.register(key, value))
+        //if a previous stat file exists, load its key value pairs
+        if (!existsSync(FILE_NAME)) return
+
+        try {
+            const saved: unknown = JSON.parse(readFileSync(FILE_NAME, "utf8"))
+            if (typeof saved !== "object" || saved === null) return
+
+            for (const [key, value] of Object.entries(saved)) {
+                if (typeof value === "number") this.stats[key] = value
+            }
+        } catch (err) {
+            console.log(`[StatManager] Could not read ${FILE_NAME}, starting from scratch:`, err)
         }
     }
 
-    static register(key: string, value: any = 0) {
-        //avoid reregistering keys
-        if (this[key]) return
+    static register(key: string) {
+        //avoid resetting keys that are already known (e.g. loaded from file or registered by another bot)
+        if (key in this.stats) return
 
-        //setup variables (the ghost _variable stores the actual value, while the real variable is the custom getter/setter)
-        this[`_${key}`] = this[key] = value
+        this.stats[key] = 0
+        this.save()
+    }
 
-        //define getter and setter
-        Object.defineProperty(this, key, {
-            set: (val) => {
-                //update ghost value
-                this["_" + key] = val
+    static get(key: string) {
+        return this.stats[key] ?? 0
+    }
 
-                //create object with ghost keys stripped of _ to reflect real stat names
-                const object = Object.entries(this)
-                    .filter(([key]) => key.startsWith("_"))
-                    .map(([key, value]) => [key.replace("_", ""), value])
+    //adds amount to a stat, persists all stats and returns the new total
+    static add(key: string, amount: number) {
+        this.stats[key] = this.get(key) + amount
+        this.save()
+        return this.stats[key]
+    }
 
-                //write object with all stats to file
-                writeFileSync(FILE_NAME, JSON.stringify(Object.fromEntries(object), null, 4))
-            },
-            get: () => this["_" + key]
-        })
+    private static save() {
+        writeFileSync(FILE_NAME, JSON.stringify(this.stats, null, 4))
     }
 }
