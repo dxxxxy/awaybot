@@ -1,9 +1,9 @@
 import { Bot } from "mineflayer"
 import State from "../../util/state.js"
-import { generateRandomNumberBetweenInclusive } from "../../util/utils.js"
+import { generateRandomNumberBetweenInclusive, sleep } from "../../util/utils.js"
 
 // noinspection JSUnusedGlobalSymbols
-export default async(bot: Bot) => {
+export default async (bot: Bot) => {
     bot.on("end", () => {
         bot.state = State.OFFLINE
     })
@@ -61,6 +61,8 @@ export default async(bot: Bot) => {
         bot.chat("/locraw")
 
         //humanize wait time
-        await bot.waitForTicks(20 * generateRandomNumberBetweenInclusive(4, 10))
+        //(wall-clock sleep instead of bot.waitForTicks: physics ticks pause while switching servers and stop on disconnect,
+        //which made waitForTicks reject and crash the process with an unhandled rejection)
+        await sleep(1000 * generateRandomNumberBetweenInclusive(4, 10))
     }
 }
