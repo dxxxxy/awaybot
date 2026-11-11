@@ -10,7 +10,7 @@ RUN npm ci
 
 COPY src src
 COPY tsconfig.json .
-RUN npx tsc --skipLibCheck
+RUN npx tsc
 RUN npm prune --omit=dev
 
 FROM node:24.12.0-alpine AS production

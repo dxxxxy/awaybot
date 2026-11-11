@@ -16,7 +16,7 @@ export default (bot: Bot) => {
                     headers: {
                         "API-Key": bot.apiKey
                     }
-                }).then(res => res.json()).then(data => data.session.online).catch(err => console.log(err))
+                }).then(res => res.json() as Promise<{ session: { online: boolean } }>).then(data => data.session.online).catch(err => console.log(err))
 
                 return !online
             }, 10000)

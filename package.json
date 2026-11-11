@@ -6,7 +6,7 @@
     "type": "module",
     "license": "GPL-3.0",
     "scripts": {
-        "prestart": "rimraf dist && tsc --skipLibCheck && copyfiles accounts.json dist",
+        "prestart": "rimraf dist && tsc && copyfiles accounts.json dist",
         "start": "cd dist && node app.js"
     },
     "dependencies": {
