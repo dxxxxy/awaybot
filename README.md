@@ -105,6 +105,9 @@ Afterward, you can view and follow (`-f`) the logs with `docker logs awaybot -f`
 Hypixel Skyblock servers send a resource pack while transferring and hold the configuration phase open until that exact pack is acknowledged, so without this the bot hangs on `/play sb` until the server closes the connection.
 Patch answers with the UUID string the server sent.
 
+The same patch adds two behaviours of the vanilla client that mineflayer is missing: a `client_tick_end` packet at the end of every client tick (sent by vanilla since 1.21.2; minecraft-data already flags it as `sendsClientTickEndPacket`), and answering server pings at the start of the next client tick instead of immediately, as vanilla does.
+Without them, Hypixel's Skyblock servers remove the bot about 20 seconds after it arrives ("We have detected badly behaving modifications being used on your account").
+
 - `minecraft-protocol`: no longer patched. The configuration handshake fix (https://github.com/PrismarineJS/mineflayer/issues/3623) is included upstream since `minecraft-protocol@1.68.0`.
 
 - `prismarine-nbt`: https://github.com/PrismarineJS/mineflayer/issues/3787#issue-3731375650

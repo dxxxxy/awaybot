@@ -1,3 +1,65 @@
+diff --git a/node_modules/mineflayer/lib/plugins/game.js b/node_modules/mineflayer/lib/plugins/game.js
+index d3291b0..1253c44 100644
+--- a/node_modules/mineflayer/lib/plugins/game.js
++++ b/node_modules/mineflayer/lib/plugins/game.js
+@@ -140,9 +140,17 @@ function inject (bot, options) {
+   })
+ 
+   // mimic the vanilla 1.17 client to prevent anticheat kicks
++  // the vanilla client handles pings on its main thread, so in the play state the pong is sent at the start
++  // of the next client tick (see physics.js); without a running tick loop it is answered right away
++  const pendingPongs = []
++  bot._flushPongs = () => {
++    while (pendingPongs.length > 0) bot._client.write('pong', { id: pendingPongs.shift() })
++  }
+   bot._client.on('ping', (data) => {
+-    bot._client.write('pong', {
+-      id: data.id
+-    })
++    if (bot._client.state === 'play' && bot._tickLoopActive) pendingPongs.push(data.id)
++    else bot._client.write('pong', { id: data.id })
+   })
++  // pings received before a transfer are answered before acknowledging it, still in the play state
++  bot._client.prependListener('start_configuration', () => bot._flushPongs())
++  bot._client.on('end', () => { pendingPongs.length = 0 })
+ }
+diff --git a/node_modules/mineflayer/lib/plugins/physics.js b/node_modules/mineflayer/lib/plugins/physics.js
+index bd36f96..da1264f 100644
+--- a/node_modules/mineflayer/lib/plugins/physics.js
++++ b/node_modules/mineflayer/lib/plugins/physics.js
+@@ -76,8 +76,16 @@ function inject (bot, { physicsEnabled, maxCatchupTicks }) {
+     }
+   }
+ 
++  // Like the vanilla client, answer pings queued since the last tick at the start of the tick
++  // and end every tick with a client_tick_end packet (1.21.2+)
+   function tickPhysics (now) {
+     if (bot._client.state !== 'play') return // do nothing outside of the play state (e.g. server transfer configuration phase)
++    bot._flushPongs()
++    simulateTick(now)
++    if (bot.supportFeature('sendsClientTickEndPacket')) bot._client.write('tick_end', {})
++  }
++
++  function simulateTick (now) {
+     if (!bot.entity?.position || !Number.isFinite(bot.entity.position.x)) return // entity not ready
+     if (bot.blockAt(bot.entity.position) == null) return // check if chunk is unloaded
+     if (bot.physicsEnabled && shouldUsePhysics) {
+@@ -98,6 +106,7 @@ function inject (bot, { physicsEnabled, maxCatchupTicks }) {
+   function cleanup () {
+     clearInterval(doPhysicsTimer)
+     doPhysicsTimer = null
++    bot._tickLoopActive = false
+   }
+ 
+   function sendPacketPosition (position, onGround) {
+@@ -488,6 +497,7 @@ function inject (bot, { physicsEnabled, maxCatchupTicks }) {
+       lastPhysicsFrameTime = performance.now()
+       doPhysicsTimer = setInterval(doPhysics, PHYSICS_INTERVAL_MS)
+     }
++    bot._tickLoopActive = true
+   })
+   // A proxy (e.g. Velocity) transferring us to another server makes the client
+   // re-enter the configuration phase, during which play-state movement packets
 diff --git a/node_modules/mineflayer/lib/plugins/resource_pack.js b/node_modules/mineflayer/lib/plugins/resource_pack.js
 index edadcbc..34002cc 100644
 --- a/node_modules/mineflayer/lib/plugins/resource_pack.js
