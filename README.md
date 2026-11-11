@@ -97,10 +97,7 @@ docker run --name awaybot --pull=always --detach -v ${pwd}/accounts.json:/awaybo
 Afterward, you can view and follow (`-f`) the logs with `docker logs awaybot -f` to view instructions on how to log into your Minecraft Account.
 
 ## Patches
-- `minecraft-protocol`: https://github.com/PrismarineJS/mineflayer/issues/3623#issuecomment-2816938153
-
-Fixes an issue in the configuration handshake on custom servers like Hypixel which causes the bot to not be able to connect.
-Patch sends a manual configuration packet.
+- `minecraft-protocol`: no longer patched. The configuration handshake fix (https://github.com/PrismarineJS/mineflayer/issues/3623) is included upstream since `minecraft-protocol@1.68.0`.
 
 - `prismarine-nbt`: https://github.com/PrismarineJS/mineflayer/issues/3787#issue-3731375650
 
