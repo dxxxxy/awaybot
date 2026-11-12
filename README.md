@@ -3,9 +3,8 @@ A fully-modular mineflayer bot for staying AFK in a smart manner on Hypixel Skyb
 
 > Note: This project now uses a patched version of mineflayer to be compatible with Hypixel on 26.1. You have nothing to do, the patches apply when you install dependencies. See [patches](#patches).
 
-![](https://img.shields.io/docker/image-size/dxxxxy/awaybot/latest?style=for-the-badge&color=9cf&logo=docker)
-![](https://img.shields.io/docker/pulls/dxxxxy/awaybot?style=for-the-badge&color=9cf&logo=docker)
-![](https://img.shields.io/docker/stars/dxxxxy/awaybot?style=for-the-badge&color=9cf&logo=docker)
+[![](https://img.shields.io/github/v/tag/dxxxxy/awaybot?style=for-the-badge&color=9cf&logo=github&label=version)](https://github.com/dxxxxy/awaybot/pkgs/container/awaybot)
+[![](https://img.shields.io/github/actions/workflow/status/dxxxxy/awaybot/release.yml?style=for-the-badge&color=9cf&logo=docker&label=image)](https://github.com/dxxxxy/awaybot/actions/workflows/release.yml)
 [![Discord](https://img.shields.io/discord/1197794960985043034?style=for-the-badge&label=Discord&color=rgb(88%2C%20101%2C%20242)%20)](https://discord.gg/aBkBCBtFVQ)
 
 ## Features
@@ -88,10 +87,13 @@ You can configure the bot by creating an `accounts.json` file in the root direct
 
 ## Docker
 You can run the bot using Docker provided you have created an `accounts.json` configuration file in the repository you are executing the command. 
+The image is published to the GitHub Container Registry for `linux/amd64` and `linux/arm64`.
 
 ```shell
-docker run --name awaybot --pull=always --detach -v ${pwd}/accounts.json:/awaybot/accounts.json:ro -v awaybot-data:/awaybot/data dxxxxy/awaybot
+docker run --name awaybot --pull=always --detach -v ${pwd}/accounts.json:/awaybot/accounts.json:ro -v awaybot-data:/awaybot/data ghcr.io/dxxxxy/awaybot
 ```
+> Note: the image used to be published as `dxxxxy/awaybot` on Docker Hub, which is no longer updated.
+
 > Note: docker volume mounts require absolute path. Adjust `${pwd}`, default for powershell,  accordingly for your OS.
 
 The `awaybot-data` volume keeps the tracked stats (`stats.json`) and the Microsoft login tokens, so they survive updating or recreating the container.
