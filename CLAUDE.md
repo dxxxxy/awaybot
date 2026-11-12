@@ -8,6 +8,7 @@ Mineflayer bot that keeps one or more Microsoft accounts AFK on Hypixel Skyblock
 - `npx tsc --noEmit`: type-check. This is the main verification step. There are no tests or linter.
 - `npm start`: cleans `dist/`, compiles, copies `accounts.json` into `dist/`, then runs `node app.js` **from inside `dist/`**. This logs into real accounts on Hypixel. Do not run it unless asked.
 - `docker build .`: multi-stage Alpine build. The image runs `node app.js` from `/awaybot` (the contents of `dist/`).
+- Releases: `npm version <patch|minor|major|x.y.z>` bumps `package.json`/`package-lock.json`, commits (`chore: release vX.Y.Z`, set in `.npmrc`) and tags. Then `git push --follow-tags`. The `v*` tag triggers `.github/workflows/release.yml`, which fails if the tag doesn't match `package.json` and otherwise pushes `ghcr.io/dxxxxy/awaybot` for amd64 and arm64. Never create release tags by hand or bump the version in CI.
 
 ## Layout
 
