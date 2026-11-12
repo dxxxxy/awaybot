@@ -1,7 +1,7 @@
 # awaybot
 A fully-modular mineflayer bot for staying AFK in a smart manner on Hypixel Skyblock.
 
-> Note: This project now uses a patched version of mineflayer to be compatible with Hypixel on 1.21+. You have nothing to do, the patches apply when you install dependencies. See [patches](#patches).
+> Note: This project now uses a patched version of mineflayer to be compatible with Hypixel on 26.1. You have nothing to do, the patches apply when you install dependencies. See [patches](#patches).
 
 ![](https://img.shields.io/docker/image-size/dxxxxy/awaybot/latest?style=for-the-badge&color=9cf&logo=docker)
 ![](https://img.shields.io/docker/pulls/dxxxxy/awaybot?style=for-the-badge&color=9cf&logo=docker)
