@@ -17,6 +17,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      #releases are cut with `npm version <version>`, which bumps package.json and creates the matching tag
+      - name: Check tag matches package.json
+        run: |
+          version="v$(node -p 'require("./package.json").version')"
+          if [ "$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $version (release with npm version)"
+            exit 1
+          fi
+
       #emulates arm64 so the image (and canvas, which compiles from source on Alpine) can be built for it
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
